@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import PDFDocument from 'pdfkit';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = 'concierge@soleilnacre.com';
@@ -15,60 +16,35 @@ export async function GET() {
 
 function getDestinationPhotos(message: string): string[] {
   const msg = message.toLowerCase();
-  if (msg.includes('amalfi') || msg.includes('italy') || msg.includes('positano') || msg.includes('rome')) {
-    return [
-      'https://images.unsplash.com/photo-1534445638895-9e762d1543f7?w=900&q=80',
-      'https://images.unsplash.com/photo-1555993539-1732b0258235?w=900&q=80',
-      'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=900&q=80',
-    ];
-  } else if (msg.includes('maldives') || msg.includes('island') || msg.includes('beach') || msg.includes('seychelles')) {
-    return [
-      'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=900&q=80',
-      'https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=900&q=80',
-      'https://images.unsplash.com/photo-1540202404-a2f29016b523?w=900&q=80',
-    ];
-  } else if (msg.includes('paris') || msg.includes('france') || msg.includes('provence')) {
-    return [
-      'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=900&q=80',
-      'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=900&q=80',
-      'https://images.unsplash.com/photo-1520939817895-060bdaf4fe1b?w=900&q=80',
-    ];
-  } else if (msg.includes('bali') || msg.includes('ubud') || msg.includes('indonesia')) {
-    return [
-      'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&q=80',
-      'https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=900&q=80',
-      'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&q=80',
-    ];
-  } else if (msg.includes('santorini') || msg.includes('greece') || msg.includes('mykonos')) {
-    return [
-      'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=900&q=80',
-      'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=900&q=80',
-      'https://images.unsplash.com/photo-1504512485720-7d83a16ee930?w=900&q=80',
-    ];
-  } else if (msg.includes('japan') || msg.includes('tokyo') || msg.includes('kyoto')) {
-    return [
-      'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=80',
-      'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900&q=80',
-      'https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900&q=80',
-    ];
-  } else if (msg.includes('swiss') || msg.includes('alps') || msg.includes('mountain')) {
-    return [
-      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80',
-      'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=900&q=80',
-      'https://images.unsplash.com/photo-1520208422220-d12a3c588574?w=900&q=80',
-    ];
-  } else if (msg.includes('dubai') || msg.includes('uae')) {
-    return [
-      'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=900&q=80',
-      'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=900&q=80',
-      'https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?w=900&q=80',
-    ];
-  }
+  if (msg.includes('amalfi') || msg.includes('italy') || msg.includes('positano') || msg.includes('rome'))
+    return ['https://images.unsplash.com/photo-1534445638895-9e762d1543f7?w=900&q=80','https://images.unsplash.com/photo-1555993539-1732b0258235?w=900&q=80','https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=900&q=80'];
+  if (msg.includes('maldives') || msg.includes('beach') || msg.includes('seychelles') || msg.includes('island'))
+    return ['https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=900&q=80','https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=900&q=80','https://images.unsplash.com/photo-1540202404-a2f29016b523?w=900&q=80'];
+  if (msg.includes('paris') || msg.includes('france') || msg.includes('provence'))
+    return ['https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=900&q=80','https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=900&q=80','https://images.unsplash.com/photo-1520939817895-060bdaf4fe1b?w=900&q=80'];
+  if (msg.includes('bali') || msg.includes('ubud') || msg.includes('indonesia'))
+    return ['https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&q=80','https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=900&q=80','https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&q=80'];
+  if (msg.includes('santorini') || msg.includes('greece') || msg.includes('mykonos'))
+    return ['https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=900&q=80','https://images.unsplash.com/photo-1533105079780-92b9be482077?w=900&q=80','https://images.unsplash.com/photo-1504512485720-7d83a16ee930?w=900&q=80'];
+  if (msg.includes('japan') || msg.includes('tokyo') || msg.includes('kyoto'))
+    return ['https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=80','https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900&q=80','https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900&q=80'];
+  if (msg.includes('swiss') || msg.includes('alps') || msg.includes('mountain'))
+    return ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80','https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=900&q=80','https://images.unsplash.com/photo-1520208422220-d12a3c588574?w=900&q=80'];
+  if (msg.includes('dubai') || msg.includes('uae'))
+    return ['https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=900&q=80','https://images.unsplash.com/photo-1518684079-3c830dcef090?w=900&q=80','https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?w=900&q=80'];
   return [
     'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=900&q=80',
     'https://images.unsplash.com/photo-1494526585095-c41746248156?w=900&q=80',
     'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=80',
   ];
+}
+
+async function fetchImageBuffer(url: string): Promise<Buffer | null> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    return Buffer.from(await res.arrayBuffer());
+  } catch { return null; }
 }
 
 function parseItineraryDays(text: string): { day: string; content: string }[] {
@@ -89,89 +65,171 @@ function parseItineraryDays(text: string): { day: string; content: string }[] {
   return days.length > 0 ? days : [{ day: 'Your Journey', content: text }];
 }
 
-// Fetch image as base64 data URI
-async function fetchImageAsDataUri(url: string): Promise<string> {
-  try {
-    const res = await fetch(url);
-    const buffer = await res.arrayBuffer();
-    const base64 = Buffer.from(buffer).toString('base64');
-    const contentType = res.headers.get('content-type') || 'image/jpeg';
-    return `data:${contentType};base64,${base64}`;
-  } catch {
-    return '';
-  }
-}
+async function generatePDF(firstname: string, lastname: string, itinerary: string, photoUrls: string[]): Promise<Buffer> {
+  return new Promise(async (resolve, reject) => {
+    const doc = new PDFDocument({ size: 'A4', margin: 0, autoFirstPage: false });
+    const buffers: Buffer[] = [];
+    doc.on('data', (chunk: Buffer) => buffers.push(chunk));
+    doc.on('end', () => resolve(Buffer.concat(buffers)));
+    doc.on('error', reject);
 
-// Build a beautiful self-contained PDF HTML (all images inlined as base64)
-async function buildPdfHtml(firstname: string, itinerary: string, photoUrls: string[]): Promise<string> {
-  const days = parseItineraryDays(itinerary);
-  const dayAccents = ['#8A7E73', '#6B7B8D', '#7D8B6E', '#8D6E7D', '#6E8D8A'];
+    const W = 595.28;
+    const H = 841.89;
+    const margin = 56;
+    const accentColors = ['#8A7E73', '#6B7B8D', '#7D8B6E', '#8D6E7D', '#6E8D8A'];
 
-  // Fetch all photos as base64 so they render in the PDF
-  const photoData = await Promise.all(photoUrls.map(fetchImageAsDataUri));
+    // Fetch photos
+    const photoBuffers = await Promise.all(photoUrls.slice(0, 3).map(fetchImageBuffer));
 
-  const daysHtml = days.map((d, i) => `
-    <div style="margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid #F0EDE9;">
-      <div style="padding:10px 16px;margin-bottom:12px;background:#F7F3EE;border-left:4px solid ${dayAccents[i % dayAccents.length]};border-radius:0 4px 4px 0;">
-        <span style="font-size:15px;font-weight:bold;color:#111;letter-spacing:0.05em;">${d.day}</span>
-      </div>
-      <div style="font-size:13px;line-height:1.9;color:#444;font-family:Arial,sans-serif;">${d.content.replace(/\n/g, '<br>')}</div>
-    </div>
-  `).join('');
+    // ── PAGE 1: Cover ────────────────────────────────────────────────────
+    doc.addPage();
 
-  return `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: Georgia, serif; background: #fff; }
-  @page { margin: 0; size: A4; }
-</style>
-</head>
-<body>
+    // Dark background
+    doc.rect(0, 0, W, H).fill('#111111');
 
-<!-- PAGE 1: Cover -->
-<div style="position:relative;width:210mm;height:297mm;background:#111;display:flex;align-items:center;justify-content:center;page-break-after:always;overflow:hidden;">
-  ${photoData[0] ? `<img src="${photoData[0]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;" />` : ''}
-  <div style="position:relative;z-index:2;text-align:center;padding:48px;">
-    <p style="font-family:Arial,sans-serif;font-size:10px;letter-spacing:0.45em;text-transform:uppercase;color:#C8B8A6;margin-bottom:18px;">Privately Curated Global Journeys</p>
-    <h1 style="font-size:48px;letter-spacing:0.3em;color:#fff;margin-bottom:14px;font-family:Georgia,serif;">SOLEIL NACRE</h1>
-    <p style="font-size:17px;color:rgba(255,255,255,0.75);margin-bottom:40px;font-style:italic;">A Bespoke Journey, Crafted for You</p>
-    <div style="border-top:1px solid rgba(255,255,255,0.2);padding-top:24px;margin-top:8px;">
-      <p style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#C8B8A6;">Prepared exclusively for ${firstname}</p>
-    </div>
-  </div>
-</div>
+    // Cover photo
+    if (photoBuffers[0]) {
+      try {
+        doc.save();
+        doc.rect(0, 0, W, H).clip();
+        doc.image(photoBuffers[0], 0, 0, { width: W, height: H });
+        doc.restore();
+        // Dark overlay
+        doc.rect(0, 0, W, H).fill('rgba(0,0,0,0.55)');
+      } catch { doc.rect(0, 0, W, H).fill('#111111'); }
+    }
 
-<!-- PAGE 2: Photo Grid -->
-<div style="width:210mm;min-height:297mm;padding:48px;background:#fff;page-break-after:always;">
-  <p style="font-family:Arial,sans-serif;font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:#8A7E73;margin-bottom:20px;text-align:center;">Your Destination</p>
-  <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:260px 260px;gap:10px;">
-    ${photoData[0] ? `<img src="${photoData[0]}" style="grid-row:1/3;width:100%;height:100%;object-fit:cover;border-radius:8px;" />` : '<div style="grid-row:1/3;background:#F7F3EE;border-radius:8px;"></div>'}
-    ${photoData[1] ? `<img src="${photoData[1]}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" />` : '<div style="background:#F7F3EE;border-radius:8px;"></div>'}
-    ${photoData[2] ? `<img src="${photoData[2]}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" />` : '<div style="background:#F7F3EE;border-radius:8px;"></div>'}
-  </div>
-  <p style="font-family:Arial,sans-serif;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#C8B8A6;text-align:center;margin-top:20px;">soleilnacre.com</p>
-</div>
+    // Cover text
+    const centerX = W / 2;
+    doc.fontSize(9).font('Helvetica').fillColor('#C8B8A6')
+      .text('PRIVATELY CURATED GLOBAL JOURNEYS', 0, H * 0.38, { align: 'center', characterSpacing: 3.5, width: W });
 
-<!-- PAGE 3+: Itinerary -->
-<div style="width:210mm;padding:56px 60px;background:#fff;">
-  <p style="font-family:Arial,sans-serif;font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:#8A7E73;margin-bottom:10px;">Your Bespoke Itinerary</p>
-  <h2 style="font-size:32px;color:#111;margin-bottom:8px;font-family:Georgia,serif;">Dear ${firstname},</h2>
-  <p style="font-size:14px;line-height:1.8;color:#555;font-style:italic;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid #EEE;font-family:Arial,sans-serif;">
-    Thank you for reaching out to Soleil Nacre. We have carefully crafted the following journey entirely around you — your preferences, your rhythm, and the experience you deserve.
-  </p>
-  ${daysHtml}
-  <div style="margin-top:48px;padding:40px;background:#111;border-radius:12px;text-align:center;">
-    <p style="font-size:24px;letter-spacing:0.3em;color:#fff;margin-bottom:10px;font-family:Georgia,serif;">SOLEIL NACRE</p>
-    <p style="font-family:Arial,sans-serif;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#C8B8A6;margin-bottom:16px;">Privately Curated Global Journeys</p>
-    <p style="font-family:Arial,sans-serif;font-size:11px;color:#8A7E73;">soleilnacre.com &nbsp;·&nbsp; @soleil_nacre</p>
-  </div>
-</div>
+    doc.fontSize(42).font('Helvetica-Bold').fillColor('#FFFFFF')
+      .text('SOLEIL NACRE', 0, H * 0.38 + 22, { align: 'center', characterSpacing: 6, width: W });
 
-</body>
-</html>`;
+    doc.fontSize(14).font('Helvetica-Oblique').fillColor('rgba(255,255,255,0.75)')
+      .text('A Bespoke Journey, Crafted for You', 0, H * 0.38 + 76, { align: 'center', width: W });
+
+    // Divider line
+    doc.moveTo(centerX - 60, H * 0.38 + 120).lineTo(centerX + 60, H * 0.38 + 120)
+      .strokeColor('rgba(255,255,255,0.25)').lineWidth(0.5).stroke();
+
+    doc.fontSize(9).font('Helvetica').fillColor('#C8B8A6')
+      .text(`Prepared exclusively for ${firstname} ${lastname}`, 0, H * 0.38 + 136, { align: 'center', characterSpacing: 2, width: W });
+
+    // ── PAGE 2: Photos ───────────────────────────────────────────────────
+    doc.addPage();
+    doc.rect(0, 0, W, H).fill('#F7F3EE');
+
+    doc.fontSize(9).font('Helvetica').fillColor('#8A7E73')
+      .text('YOUR DESTINATION', margin, 52, { characterSpacing: 3, width: W - margin * 2, align: 'center' });
+
+    const gap = 10;
+    const col1W = (W - margin * 2) * 0.55;
+    const col2W = W - margin * 2 - col1W - gap;
+    const rowH = (H - 160) / 2 - gap / 2;
+
+    // Large left photo
+    if (photoBuffers[0]) {
+      try { doc.image(photoBuffers[0], margin, 88, { width: col1W, height: rowH * 2 + gap, cover: [col1W, rowH * 2 + gap] }); } catch {}
+    } else { doc.rect(margin, 88, col1W, rowH * 2 + gap).fill('#DDD'); }
+
+    // Top right photo
+    if (photoBuffers[1]) {
+      try { doc.image(photoBuffers[1], margin + col1W + gap, 88, { width: col2W, height: rowH, cover: [col2W, rowH] }); } catch {}
+    } else { doc.rect(margin + col1W + gap, 88, col2W, rowH).fill('#DDD'); }
+
+    // Bottom right photo
+    if (photoBuffers[2]) {
+      try { doc.image(photoBuffers[2], margin + col1W + gap, 88 + rowH + gap, { width: col2W, height: rowH, cover: [col2W, rowH] }); } catch {}
+    } else { doc.rect(margin + col1W + gap, 88 + rowH + gap, col2W, rowH).fill('#DDD'); }
+
+    doc.fontSize(9).font('Helvetica').fillColor('#C8B8A6')
+      .text('soleilnacre.com', 0, H - 52, { align: 'center', width: W, characterSpacing: 2 });
+
+    // ── PAGE 3+: Itinerary ───────────────────────────────────────────────
+    doc.addPage();
+    doc.rect(0, 0, W, H).fill('#FFFFFF');
+
+    let y = margin;
+
+    doc.fontSize(9).font('Helvetica').fillColor('#8A7E73')
+      .text('YOUR BESPOKE ITINERARY', margin, y, { characterSpacing: 3 });
+    y += 22;
+
+    doc.fontSize(28).font('Helvetica-Bold').fillColor('#111111')
+      .text(`Dear ${firstname},`, margin, y, { width: W - margin * 2 });
+    y += 44;
+
+    doc.fontSize(12).font('Helvetica-Oblique').fillColor('#777777')
+      .text('Thank you for reaching out to Soleil Nacre. We have carefully crafted the following journey entirely around you — your preferences, your rhythm, and the experience you deserve.', margin, y, { width: W - margin * 2, lineGap: 4 });
+    y += 60;
+
+    // Divider
+    doc.moveTo(margin, y).lineTo(W - margin, y).strokeColor('#EEEEEE').lineWidth(0.5).stroke();
+    y += 24;
+
+    const days = parseItineraryDays(itinerary);
+
+    for (let i = 0; i < days.length; i++) {
+      const d = days[i];
+
+      // Check if we need a new page
+      if (y > H - 180) {
+        doc.addPage();
+        doc.rect(0, 0, W, H).fill('#FFFFFF');
+        y = margin;
+      }
+
+      // Day accent bar
+      const accent = accentColors[i % accentColors.length];
+      doc.rect(margin, y, 3, 22).fill(accent);
+      doc.rect(margin + 3, y, W - margin * 2 - 3, 22).fill('#F7F3EE');
+      doc.fontSize(12).font('Helvetica-Bold').fillColor('#111111')
+        .text(d.day, margin + 14, y + 5, { width: W - margin * 2 - 14 });
+      y += 32;
+
+      // Day content — split into lines and render
+      const contentLines = d.content.split('\n').filter(l => l.trim());
+      for (const line of contentLines) {
+        if (y > H - 80) {
+          doc.addPage();
+          doc.rect(0, 0, W, H).fill('#FFFFFF');
+          y = margin;
+        }
+        const isSection = line.match(/^(morning|afternoon|evening):/i);
+        if (isSection) {
+          doc.fontSize(10).font('Helvetica-Bold').fillColor(accent)
+            .text(line, margin, y, { width: W - margin * 2 });
+        } else {
+          doc.fontSize(11).font('Helvetica').fillColor('#444444')
+            .text(line, margin, y, { width: W - margin * 2, lineGap: 2 });
+        }
+        y += doc.currentLineHeight(true) + 4;
+      }
+      y += 16;
+
+      // Section divider
+      if (i < days.length - 1) {
+        doc.moveTo(margin, y).lineTo(W - margin, y).strokeColor('#F0EDE9').lineWidth(0.5).stroke();
+        y += 16;
+      }
+    }
+
+    // ── Final footer band ────────────────────────────────────────────────
+    if (y > H - 120) { doc.addPage(); doc.rect(0, 0, W, H).fill('#FFFFFF'); y = margin; }
+
+    y += 24;
+    doc.rect(margin, y, W - margin * 2, 100).fill('#111111');
+    doc.fontSize(20).font('Helvetica-Bold').fillColor('#FFFFFF')
+      .text('SOLEIL NACRE', margin, y + 18, { align: 'center', width: W - margin * 2, characterSpacing: 4 });
+    doc.fontSize(8).font('Helvetica').fillColor('#C8B8A6')
+      .text('PRIVATELY CURATED GLOBAL JOURNEYS', margin, y + 48, { align: 'center', width: W - margin * 2, characterSpacing: 2.5 });
+    doc.fontSize(9).font('Helvetica').fillColor('#8A7E73')
+      .text('soleilnacre.com  ·  @soleil_nacre', margin, y + 68, { align: 'center', width: W - margin * 2 });
+
+    doc.end();
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -190,7 +248,7 @@ export async function POST(req: NextRequest) {
     logs.push(`2. Fields — email: ${email}, name: ${firstname} ${lastname}`);
     if (!email) return NextResponse.json({ error: 'No email found', logs }, { status: 400 });
 
-    // ── 1. Generate itinerary ──────────────────────────────────────────────
+    // ── 1. Generate itinerary ──────────────────────────────────────────
     logs.push('3. Calling Anthropic...');
     const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -207,59 +265,38 @@ export async function POST(req: NextRequest) {
           content: `You are the concierge at Soleil Nacre, an ultra-luxury private travel company. Write a personalised 5-day luxury itinerary for this client.
 Client: ${firstname} ${lastname}
 Inquiry: "${message}"
-Write in an elegant tone. Include Day 1-5 with morning/afternoon/evening. Name specific luxury hotels and restaurants. End with a warm closing. Plain text only, no markdown.`,
+Write elegantly. Include Day 1-5 with Morning:, Afternoon:, Evening: sections. Name specific luxury hotels and restaurants. End with a warm closing. Plain text only, no markdown symbols.`,
         }],
       }),
     });
     const anthropicData = await anthropicRes.json();
     logs.push(`4. Anthropic status: ${anthropicRes.status}`);
     if (!anthropicRes.ok) return NextResponse.json({ error: 'Anthropic failed', detail: anthropicData, logs }, { status: 500 });
+    const itinerary = anthropicData.content?.[0]?.text || '';
+    logs.push(`5. Itinerary: ${itinerary.length} chars`);
 
-    const itinerary = anthropicData.content?.[0]?.text || 'Your itinerary is being prepared.';
-    logs.push(`5. Itinerary generated — ${itinerary.length} chars`);
-
-    // ── 2. Get photos + build PDF HTML ────────────────────────────────────
-    logs.push('6. Fetching photos...');
-    const photoUrls = getDestinationPhotos(message);
-    const pdfHtml = await buildPdfHtml(firstname, itinerary, photoUrls);
-    logs.push(`7. PDF HTML built — ${Math.round(pdfHtml.length / 1024)}KB`);
-
-    // ── 3. Convert HTML to PDF via Gotenberg (free open API) ─────────────
-    logs.push('8. Generating PDF via API...');
+    // ── 2. Generate PDF ────────────────────────────────────────────────
+    logs.push('6. Generating PDF...');
     let pdfBase64 = '';
     try {
-      const formData = new FormData();
-      formData.append('files', new Blob([pdfHtml], { type: 'text/html' }), 'index.html');
-      formData.append('marginTop', '0');
-      formData.append('marginBottom', '0');
-      formData.append('marginLeft', '0');
-      formData.append('marginRight', '0');
-      formData.append('printBackground', 'true');
-
-      const pdfRes = await fetch('https://gotenberg.marcflorent.com/forms/chromium/convert/html', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (pdfRes.ok) {
-        const pdfBuffer = await pdfRes.arrayBuffer();
-        pdfBase64 = Buffer.from(pdfBuffer).toString('base64');
-        logs.push(`9. PDF generated — ${Math.round(pdfBase64.length / 1024)}KB`);
-      } else {
-        logs.push(`9. PDF API failed: ${pdfRes.status} — falling back to HTML`);
-      }
+      const photoUrls = getDestinationPhotos(message);
+      const pdfBuffer = await generatePDF(firstname, lastname, itinerary, photoUrls);
+      pdfBase64 = pdfBuffer.toString('base64');
+      logs.push(`7. PDF done — ${Math.round(pdfBase64.length / 1024)}KB`);
     } catch (pdfErr) {
-      logs.push(`9. PDF error: ${String(pdfErr)} — falling back to HTML`);
+      logs.push(`7. PDF failed: ${String(pdfErr)}`);
     }
 
-    // ── 4. Send email ──────────────────────────────────────────────────────
-    logs.push('10. Sending email...');
+    // ── 3. Send email ──────────────────────────────────────────────────
+    logs.push('8. Sending email...');
+    const photoUrls = getDestinationPhotos(message);
+
     const emailPayload: Record<string, unknown> = {
       from: `Soleil Nacre Concierge <${FROM_EMAIL}>`,
       to: [email],
       subject: 'Your Bespoke Journey — Soleil Nacre',
       html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#F7F3EE;font-family:Georgia,serif;">
+<body style="margin:0;padding:0;background:#F7F3EE;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#F7F3EE;padding:40px 20px;">
 <tr><td align="center">
 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
@@ -268,12 +305,12 @@ Write in an elegant tone. Include Day 1-5 with morning/afternoon/evening. Name s
     <h1 style="margin:12px 0 0;color:#fff;font-size:28px;letter-spacing:0.3em;font-family:Georgia,serif;">SOLEIL NACRE</h1>
   </td></tr>
   <tr><td style="padding:0;"><img src="${photoUrls[0]}" style="width:100%;height:220px;object-fit:cover;display:block;" /></td></tr>
-  <tr><td style="padding:40px 48px 24px;">
+  <tr><td style="padding:40px 48px 32px;">
     <p style="margin:0 0 8px;color:#8A7E73;font-size:11px;letter-spacing:0.35em;text-transform:uppercase;font-family:Arial,sans-serif;">Your Bespoke Itinerary</p>
     <h2 style="margin:0 0 16px;color:#111;font-size:24px;font-family:Georgia,serif;">Dear ${firstname},</h2>
     <p style="margin:0;color:#555;font-size:15px;line-height:1.8;font-family:Arial,sans-serif;">
       ${pdfBase64
-        ? 'Thank you for reaching out to Soleil Nacre. Your personalised itinerary is attached as a beautifully designed PDF — crafted entirely around you.'
+        ? 'Thank you for reaching out to Soleil Nacre. Your personalised itinerary is beautifully designed and attached as a PDF — crafted entirely around you.'
         : 'Thank you for reaching out to Soleil Nacre. Your personalised journey is below.'}
     </p>
     ${!pdfBase64 ? `<div style="margin-top:24px;color:#333;font-size:14px;line-height:1.9;font-family:Arial,sans-serif;white-space:pre-wrap;">${itinerary.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>` : ''}
@@ -306,7 +343,7 @@ Write in an elegant tone. Include Day 1-5 with morning/afternoon/evening. Name s
       body: JSON.stringify(emailPayload),
     });
     const emailData = await emailRes.json();
-    logs.push(`11. Resend: ${emailRes.status} — id: ${emailData.id}`);
+    logs.push(`9. Resend: ${emailRes.status} — id: ${emailData.id}`);
     if (!emailRes.ok) return NextResponse.json({ error: 'Resend failed', detail: emailData, logs }, { status: 500 });
 
     return NextResponse.json({ success: true, email_id: emailData.id, pdf_generated: !!pdfBase64, logs });
