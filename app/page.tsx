@@ -84,7 +84,8 @@ export default function SoleilNacreWebsite() {
     e.preventDefault();
     setFormStatus('loading');
     setFormError('');
-    const payload = {
+
+    const hubspotPayload = {
       fields: [
         { name: 'firstname', value: formFields.firstname },
         { name: 'lastname', value: formFields.lastname },
@@ -93,12 +94,31 @@ export default function SoleilNacreWebsite() {
       ],
       context: { pageUri: typeof window !== 'undefined' ? window.location.href : '', pageName: 'Soleil Nacre — Inquiry' },
     };
+
     try {
-      const res = await fetch(
+      // Step 1 — Submit to HubSpot CRM
+      const hubspotRes = await fetch(
         `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_GUID}`,
-        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(hubspotPayload) }
       );
-      if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'Submission failed'); }
+      if (!hubspotRes.ok) { const err = await hubspotRes.json(); throw new Error(err.message || 'Submission failed'); }
+
+      // Step 2 — Trigger Claude itinerary generation + email (fire and forget)
+      fetch('/api/itinerary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          properties: {
+            firstname: formFields.firstname,
+            lastname: formFields.lastname,
+            email: formFields.email,
+            message: `Destination: ${formFields.destination}\n\n${formFields.message}`,
+          },
+        }),
+      }).catch(() => {
+        // Silently fail — itinerary email is non-blocking
+      });
+
       setFormStatus('success');
       setFormFields({ firstname: '', lastname: '', email: '', destination: '', message: '' });
     } catch (err: unknown) {
