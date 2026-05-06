@@ -159,7 +159,8 @@ async function tryGeneratePDF(firstname: string, lastname: string, itinerary: st
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10.5);
     doc.setTextColor(17, 17, 17);
-    doc.text(days[i].day, ML + 12, y + 15);
+    const dayTitle = doc.splitTextToSize(days[i].day, W - ML * 2 - 16);
+    doc.text(dayTitle, ML + 12, y + 15);
     y += 30;
 
     // Day content
@@ -174,18 +175,31 @@ async function tryGeneratePDF(firstname: string, lastname: string, itinerary: st
 
       if (/^(morning|afternoon|evening):/i.test(line)) {
         y += 6;
+        // Label on its own line
+        const labelParts = line.match(/^([^:]+:)\s*(.*)/);
+        const labelKey = labelParts ? labelParts[1].toUpperCase() : line.toUpperCase();
+        const labelVal = labelParts ? labelParts[2] : '';
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8.5);
         doc.setTextColor(accent);
-        doc.text(line.toUpperCase(), ML, y);
+        doc.text(labelKey, ML, y);
         y += 14;
+        // Content of the label line wrapped properly
+        if (labelVal.trim()) {
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(10);
+          doc.setTextColor(68, 68, 68);
+          const wrapped = doc.splitTextToSize(labelVal, W - ML * 2);
+          doc.text(wrapped, ML, y);
+          y += wrapped.length * 13.5 + 2;
+        }
       } else if (line.trim()) {
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10);
+        doc.setFontSize(9.5);
         doc.setTextColor(68, 68, 68);
         const wrapped = doc.splitTextToSize(line, W - ML * 2);
         doc.text(wrapped, ML, y);
-        y += wrapped.length * 13.5 + 3;
+        y += wrapped.length * 13 + 3;
       }
     }
     y += 16;
