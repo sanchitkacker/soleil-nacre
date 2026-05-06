@@ -41,7 +41,10 @@ function getDestinationPhotos(message: string): string[] {
 
 async function fetchImageBuffer(url: string): Promise<Buffer | null> {
   try {
-    const res = await fetch(url);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timer);
     if (!res.ok) return null;
     return Buffer.from(await res.arrayBuffer());
   } catch { return null; }
@@ -275,12 +278,16 @@ Write elegantly. Include Day 1-5 with Morning:, Afternoon:, Evening: sections. N
     const itinerary = anthropicData.content?.[0]?.text || '';
     logs.push(`5. Itinerary: ${itinerary.length} chars`);
 
-    // ── 2. Generate PDF ────────────────────────────────────────────────
+    // ── 2. Generate PDF (with 25s timeout so email always sends) ─────
     logs.push('6. Generating PDF...');
     let pdfBase64 = '';
+    const photoUrls = getDestinationPhotos(message);
     try {
-      const photoUrls = getDestinationPhotos(message);
-      const pdfBuffer = await generatePDF(firstname, lastname, itinerary, photoUrls);
+      const pdfPromise = generatePDF(firstname, lastname, itinerary, photoUrls);
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('PDF timeout after 25s')), 25000)
+      );
+      const pdfBuffer = await Promise.race([pdfPromise, timeoutPromise]);
       pdfBase64 = pdfBuffer.toString('base64');
       logs.push(`7. PDF done — ${Math.round(pdfBase64.length / 1024)}KB`);
     } catch (pdfErr) {
@@ -289,7 +296,6 @@ Write elegantly. Include Day 1-5 with Morning:, Afternoon:, Evening: sections. N
 
     // ── 3. Send email ──────────────────────────────────────────────────
     logs.push('8. Sending email...');
-    const photoUrls = getDestinationPhotos(message);
 
     const emailPayload: Record<string, unknown> = {
       from: `Soleil Nacre Concierge <${FROM_EMAIL}>`,
