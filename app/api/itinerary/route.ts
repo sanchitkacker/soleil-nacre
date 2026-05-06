@@ -53,132 +53,168 @@ function parseItineraryDays(text: string): { day: string; content: string }[] {
 }
 
 async function tryGeneratePDF(firstname: string, lastname: string, itinerary: string, photoUrl: string): Promise<string> {
-  const { default: PDFDocument } = await import('pdfkit');
+  const { jsPDF } = await import('jspdf');
+  const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'portrait' });
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+  const M = 52;
+  const accentColors = ['#8A7E73', '#6B7B8D', '#7D8B6E', '#8D6E7D', '#6E8D8A'];
 
-  return new Promise(async (resolve, reject) => {
-    try {
-      const doc = new PDFDocument({ size: 'A4', margin: 0, autoFirstPage: false });
-      const buffers: Buffer[] = [];
-      doc.on('data', (chunk: Buffer) => buffers.push(chunk));
-      doc.on('end', () => resolve(Buffer.concat(buffers).toString('base64')));
-      doc.on('error', reject);
+  // ── PAGE 1: Cover ──────────────────────────────────────────────────
+  // Dark background
+  doc.setFillColor('#111111');
+  doc.rect(0, 0, W, H, 'F');
 
-      const W = 595.28;
-      const H = 841.89;
-      const M = 52;
-      const accentColors = ['#8A7E73', '#6B7B8D', '#7D8B6E', '#8D6E7D', '#6E8D8A'];
-
-      // ── PAGE 1: Cover ──────────────────────────────────────────────
-      doc.addPage();
-      doc.rect(0, 0, W, H).fill('#111111');
-
-      // Try to load cover photo
-      try {
-        const ctrl = new AbortController();
-        setTimeout(() => ctrl.abort(), 6000);
-        const imgRes = await fetch(photoUrl, { signal: ctrl.signal });
-        if (imgRes.ok) {
-          const imgBuf = Buffer.from(await imgRes.arrayBuffer());
-          doc.save();
-          doc.rect(0, 0, W, H).clip();
-          doc.image(imgBuf, 0, 0, { width: W, height: H });
-          doc.restore();
-        }
-      } catch { /* no photo — dark cover still looks great */ }
-
+  // Try to embed cover photo
+  try {
+    const ctrl = new AbortController();
+    setTimeout(() => ctrl.abort(), 6000);
+    const imgRes = await fetch(photoUrl, { signal: ctrl.signal });
+    if (imgRes.ok) {
+      const imgBuf = Buffer.from(await imgRes.arrayBuffer());
+      const b64 = imgBuf.toString('base64');
+      doc.addImage(b64, 'JPEG', 0, 0, W, H);
       // Dark overlay
-      doc.rect(0, 0, W, H).fill('#00000088');
-
-      // Cover text
-      doc.fontSize(9).font('Helvetica').fillColor('#C8B8A6')
-        .text('PRIVATELY CURATED GLOBAL JOURNEYS', 0, H * 0.40, { align: 'center', characterSpacing: 3, width: W });
-      doc.fontSize(40).font('Helvetica-Bold').fillColor('#FFFFFF')
-        .text('SOLEIL NACRE', 0, H * 0.40 + 20, { align: 'center', characterSpacing: 5, width: W });
-      doc.fontSize(14).font('Helvetica-Oblique').fillColor('rgba(255,255,255,0.75)')
-        .text('A Bespoke Journey, Crafted for You', 0, H * 0.40 + 72, { align: 'center', width: W });
-      doc.moveTo(W / 2 - 50, H * 0.40 + 114).lineTo(W / 2 + 50, H * 0.40 + 114)
-        .strokeColor('#ffffff44').lineWidth(0.5).stroke();
-      doc.fontSize(9).font('Helvetica').fillColor('#C8B8A6')
-        .text(`Prepared exclusively for ${firstname} ${lastname}`.toUpperCase(), 0, H * 0.40 + 126, { align: 'center', characterSpacing: 2, width: W });
-
-      // ── PAGE 2: Itinerary ──────────────────────────────────────────
-      doc.addPage();
-      doc.rect(0, 0, W, H).fill('#FFFFFF');
-
-      let y = M;
-
-      doc.fontSize(9).font('Helvetica').fillColor('#8A7E73')
-        .text('YOUR BESPOKE ITINERARY', M, y, { characterSpacing: 3 });
-      y += 20;
-
-      doc.fontSize(26).font('Helvetica-Bold').fillColor('#111111')
-        .text(`Dear ${firstname},`, M, y, { width: W - M * 2 });
-      y += 40;
-
-      doc.fontSize(11).font('Helvetica-Oblique').fillColor('#777777')
-        .text('Thank you for reaching out to Soleil Nacre. We have carefully crafted the following journey entirely around you — your preferences, your rhythm, and the experience you deserve.', M, y, { width: W - M * 2, lineGap: 3 });
-      y += 56;
-
-      doc.moveTo(M, y).lineTo(W - M, y).strokeColor('#EEEEEE').lineWidth(0.5).stroke();
-      y += 20;
-
-      const days = parseItineraryDays(itinerary);
-
-      for (let i = 0; i < days.length; i++) {
-        if (y > H - 160) {
-          doc.addPage();
-          doc.rect(0, 0, W, H).fill('#FFFFFF');
-          y = M;
-        }
-
-        const accent = accentColors[i % accentColors.length];
-        doc.rect(M, y, 3, 20).fill(accent);
-        doc.rect(M + 3, y, W - M * 2 - 3, 20).fill('#F7F3EE');
-        doc.fontSize(11).font('Helvetica-Bold').fillColor('#111111')
-          .text(days[i].day, M + 12, y + 4, { width: W - M * 2 - 12 });
-        y += 28;
-
-        const lines = days[i].content.split('\n').filter(l => l.trim());
-        for (const line of lines) {
-          if (y > H - 80) {
-            doc.addPage();
-            doc.rect(0, 0, W, H).fill('#FFFFFF');
-            y = M;
-          }
-          const isLabel = line.match(/^(morning|afternoon|evening):/i);
-          if (isLabel) {
-            doc.fontSize(9).font('Helvetica-Bold').fillColor(accent)
-              .text(line.toUpperCase(), M, y, { width: W - M * 2 });
-          } else {
-            doc.fontSize(10.5).font('Helvetica').fillColor('#444444')
-              .text(line, M, y, { width: W - M * 2, lineGap: 2 });
-          }
-          y += doc.currentLineHeight(true) + 3;
-        }
-        y += 14;
-
-        if (i < days.length - 1) {
-          doc.moveTo(M, y).lineTo(W - M, y).strokeColor('#F0EDE9').lineWidth(0.5).stroke();
-          y += 14;
-        }
+      // Semi-transparent overlay using multiple thin rects
+      doc.setFillColor(0, 0, 0);
+      for (let oi = 0; oi < 8; oi++) {
+        doc.rect(0, 0, W, H, 'F');
       }
-
-      // Footer band
-      if (y > H - 110) { doc.addPage(); doc.rect(0, 0, W, H).fill('#FFFFFF'); y = M; }
-      y += 20;
-      doc.rect(M, y, W - M * 2, 90).fill('#111111');
-      doc.fontSize(18).font('Helvetica-Bold').fillColor('#FFFFFF')
-        .text('SOLEIL NACRE', M, y + 16, { align: 'center', width: W - M * 2, characterSpacing: 4 });
-      doc.fontSize(8).font('Helvetica').fillColor('#C8B8A6')
-        .text('PRIVATELY CURATED GLOBAL JOURNEYS', M, y + 42, { align: 'center', width: W - M * 2, characterSpacing: 2 });
-      doc.fontSize(9).font('Helvetica').fillColor('#8A7E73')
-        .text('soleilnacre.com  ·  @soleil_nacre', M, y + 60, { align: 'center', width: W - M * 2 });
-
-      doc.end();
-    } catch (e) {
-      reject(e);
     }
-  });
+  } catch { /* use dark cover */ }
+
+  const midY = H * 0.40;
+  doc.setTextColor('#C8B8A6');
+  doc.setFontSize(8);
+  doc.text('PRIVATELY CURATED GLOBAL JOURNEYS', W / 2, midY, { align: 'center', charSpace: 2 });
+
+  doc.setTextColor('#FFFFFF');
+  doc.setFontSize(36);
+  doc.setFont('helvetica', 'bold');
+  doc.text('SOLEIL NACRE', W / 2, midY + 28, { align: 'center', charSpace: 4 });
+
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(13);
+  doc.setTextColor(220, 220, 220);
+  doc.text('A Bespoke Journey, Crafted for You', W / 2, midY + 56, { align: 'center' });
+
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.3);
+  doc.line(W / 2 - 50, midY + 76, W / 2 + 50, midY + 76);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor('#C8B8A6');
+  doc.text(`PREPARED EXCLUSIVELY FOR ${(firstname + ' ' + lastname).toUpperCase()}`, W / 2, midY + 96, { align: 'center', charSpace: 1.5 });
+
+  // ── PAGE 2: Itinerary ──────────────────────────────────────────────
+  doc.addPage();
+  doc.setFillColor('#FFFFFF');
+  doc.rect(0, 0, W, H, 'F');
+
+  let y = M;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor('#8A7E73');
+  doc.text('YOUR BESPOKE ITINERARY', M, y, { charSpace: 2 });
+  y += 22;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(24);
+  doc.setTextColor('#111111');
+  doc.text(`Dear ${firstname},`, M, y);
+  y += 36;
+
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(10.5);
+  doc.setTextColor('#777777');
+  const introLines = doc.splitTextToSize(
+    'Thank you for reaching out to Soleil Nacre. We have carefully crafted the following journey entirely around you — your preferences, your rhythm, and the experience you deserve.',
+    W - M * 2
+  );
+  doc.text(introLines, M, y);
+  y += introLines.length * 14 + 16;
+
+  doc.setDrawColor('#EEEEEE');
+  doc.setLineWidth(0.4);
+  doc.line(M, y, W - M, y);
+  y += 18;
+
+  const days = parseItineraryDays(itinerary);
+
+  for (let i = 0; i < days.length; i++) {
+    if (y > H - 140) {
+      doc.addPage();
+      doc.setFillColor('#FFFFFF');
+      doc.rect(0, 0, W, H, 'F');
+      y = M;
+    }
+
+    const accent = accentColors[i % accentColors.length];
+    // Accent bar
+    doc.setFillColor(accent);
+    doc.rect(M, y, 3, 19, 'F');
+    doc.setFillColor('#F7F3EE');
+    doc.rect(M + 3, y, W - M * 2 - 3, 19, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10.5);
+    doc.setTextColor('#111111');
+    doc.text(days[i].day, M + 12, y + 13);
+    y += 26;
+
+    const lines = days[i].content.split("\n").filter((l: string) => l.trim());
+    for (const line of lines) {
+      if (y > H - 70) {
+        doc.addPage();
+        doc.setFillColor('#FFFFFF');
+        doc.rect(0, 0, W, H, 'F');
+        y = M;
+      }
+      const isLabel = /^(morning|afternoon|evening):/i.test(line);
+      if (isLabel) {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(accent);
+        doc.text(line.toUpperCase(), M, y);
+        y += 13;
+      } else {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor('#444444');
+        const wrapped = doc.splitTextToSize(line, W - M * 2);
+        doc.text(wrapped, M, y);
+        y += wrapped.length * 13 + 2;
+      }
+    }
+    y += 12;
+
+    if (i < days.length - 1) {
+      doc.setDrawColor('#F0EDE9');
+      doc.setLineWidth(0.4);
+      doc.line(M, y, W - M, y);
+      y += 12;
+    }
+  }
+
+  // Footer
+  if (y > H - 100) { doc.addPage(); doc.setFillColor('#FFFFFF'); doc.rect(0, 0, W, H, 'F'); y = M; }
+  y += 18;
+  doc.setFillColor('#111111');
+  doc.rect(M, y, W - M * 2, 82, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.setTextColor('#FFFFFF');
+  doc.text('SOLEIL NACRE', W / 2, y + 24, { align: 'center', charSpace: 3 });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor('#C8B8A6');
+  doc.text('PRIVATELY CURATED GLOBAL JOURNEYS', W / 2, y + 44, { align: 'center', charSpace: 2 });
+  doc.setTextColor('#8A7E73');
+  doc.setFontSize(9);
+  doc.text('soleilnacre.com  ·  @soleil_nacre', W / 2, y + 62, { align: 'center' });
+
+  return Buffer.from(doc.output('arraybuffer') as ArrayBuffer).toString('base64');
 }
 
 export async function POST(req: NextRequest) {
