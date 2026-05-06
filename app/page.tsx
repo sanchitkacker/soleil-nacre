@@ -4,10 +4,163 @@ import { useState } from 'react';
 const HUBSPOT_PORTAL_ID = '246050824';
 const HUBSPOT_FORM_GUID = '87de2666-5e92-470d-bb83-15cc7863142a';
 
+const journalPosts = [
+  {
+    id: 'quiet-luxury-travel',
+    title: 'The New Era of Quiet Luxury Travel',
+    category: 'Editorial',
+    image: 'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1600&auto=format&fit=crop',
+    excerpt: 'How the world\'s most discerning travelers are redefining what it means to travel well.',
+    readTime: '6 min read',
+    content: [
+      {
+        type: 'intro',
+        text: 'There is a shift happening in the world of luxury travel — one that is less about spectacle and more about depth. The era of ostentatious opulence, of gold-plated lobbies and extravagant excess, is quietly giving way to something far more refined. Today\'s most discerning travelers are not seeking to be seen. They are seeking to feel.',
+      },
+      {
+        type: 'heading',
+        text: 'The Turn Away from Noise',
+      },
+      {
+        type: 'text',
+        text: 'Quiet luxury is not a trend born from aesthetics alone — though its visual language is unmistakably beautiful. It is a philosophy rooted in intentionality. It asks: what truly matters when you step away from your ordinary life? The answer, increasingly, is connection. To place. To culture. To the rare stillness that only the most thoughtfully curated experiences can offer.',
+      },
+      {
+        type: 'text',
+        text: 'Think of a private villa perched above the Amalfi Coast, where the only sounds are the sea and the wind threading through lemon groves. Or a ryokan in Kyoto\'s Higashiyama district, where every wooden detail has been considered over centuries. These are not experiences designed to impress others. They are designed to impress upon you.',
+      },
+      {
+        type: 'heading',
+        text: 'Privacy as the Ultimate Luxury',
+      },
+      {
+        type: 'text',
+        text: 'What unites the new quiet luxury traveler is a fierce prioritization of privacy. Not secrecy — but the freedom to experience the world on one\'s own terms, without the choreography of public-facing performance. Private transfers. Exclusive villa rentals. After-hours museum access. Chef\'s table dinners in cellars not open to the general public.',
+      },
+      {
+        type: 'text',
+        text: 'At Soleil Nacre, we have long believed that the greatest gift we can offer our clients is the freedom to be entirely themselves — unhurried, unobserved, and deeply present. That is the essence of what we curate.',
+      },
+      {
+        type: 'heading',
+        text: 'Material Quality, Immaterial Value',
+      },
+      {
+        type: 'text',
+        text: 'The fabrics are exceptional. The thread counts are extraordinary. The champagne is vintage and the chef has a Michelin star. But none of that is the point. The point is how you feel when you wake up in those sheets, in that room, and realize that every single detail has been attended to so that your only obligation is to be present.',
+      },
+      {
+        type: 'text',
+        text: 'That is the new era of quiet luxury travel. And for those who have experienced it, nothing else will quite do.',
+      },
+    ],
+  },
+  {
+    id: 'private-villas',
+    title: 'Private Villas Worth Escaping To',
+    category: 'Destinations',
+    image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop',
+    excerpt: 'Six extraordinary private residences across three continents — each one a world unto itself.',
+    readTime: '8 min read',
+    content: [
+      {
+        type: 'intro',
+        text: 'A private villa is more than a place to sleep. At its finest, it is a stage upon which the entire experience of travel unfolds — a home that is not yours, yet somehow feels more you than home itself. These are six of the world\'s most extraordinary private residences, chosen not merely for their beauty, but for the irreplaceable feeling they leave behind.',
+      },
+      {
+        type: 'heading',
+        text: 'Villa Aurora — Positano, Amalfi Coast',
+      },
+      {
+        type: 'text',
+        text: 'Carved into the cliff face above Positano\'s cerulean waters, Villa Aurora is the kind of place that seems to exist outside of time. Twelve rooms, each with uninterrupted sea views, are decorated in the restrained palette of the Mediterranean — whitewash and terracotta, linen and stone. A private chef prepares breakfast on the sun-drenched terrace each morning. A vintage wooden tender is at your disposal for spontaneous escapes to secluded coves. The bougainvillea is perpetually in bloom.',
+      },
+      {
+        type: 'heading',
+        text: 'Domaine des Oliviers — Saint-Rémy-de-Provence',
+      },
+      {
+        type: 'text',
+        text: 'A nineteenth-century mas converted into a masterpiece of Provençal luxury, Domaine des Oliviers sits amid sixty acres of lavender fields and ancient olive groves. The interiors are a collaboration between the building\'s storied history and impeccably contemporary sensibility — rough stone walls draped with antique linens, original terracotta floors warmed by underfloor heating. The pool, hewn from local limestone, seems to melt into the landscape. This is France at its most quietly magnificent.',
+      },
+      {
+        type: 'heading',
+        text: 'Puri Harmoni — Ubud, Bali',
+      },
+      {
+        type: 'text',
+        text: 'Perched above a river gorge in the sacred heart of Ubud, Puri Harmoni is both a residence and a philosophy. Traditional Balinese architecture — carved timber, pavilion-style living spaces, ornate stone water features — coexists with every modern comfort. Mornings begin with guided meditation in the open-air yoga pavilion. Afternoons dissolve into the sound of the river below. A resident healer offers ancient Balinese treatments by candlelight. Time, here, moves differently.',
+      },
+      {
+        type: 'heading',
+        text: 'The Full Collection',
+      },
+      {
+        type: 'text',
+        text: 'These three represent only a fragment of the private residences Soleil Nacre works with across the Mediterranean, Indian Ocean, and beyond. Each property is personally vetted — we stay in them, we speak with their staff, we understand their rhythms and their light at different times of year. Only then do we match them to our clients.',
+      },
+      {
+        type: 'text',
+        text: 'To inquire about any of these properties, or to begin the conversation about which villa might be right for your next journey, we invite you to reach out to our concierge team directly.',
+      },
+    ],
+  },
+  {
+    id: 'journeys-around-emotion',
+    title: 'Designing Journeys Around Emotion',
+    category: 'Travel Philosophy',
+    image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1600&auto=format&fit=crop',
+    excerpt: 'The itinerary is only the beginning. The best journeys are built around how you want to feel.',
+    readTime: '5 min read',
+    content: [
+      {
+        type: 'intro',
+        text: 'When a new client first reaches out to us, we rarely begin with destinations. We begin with a question: how do you want to feel? It is a question that catches people off guard. They arrive prepared to speak of places — of specific hotels, of coastlines and mountain ranges. And we will get there. But first, we want to understand the emotional territory of the journey.',
+      },
+      {
+        type: 'heading',
+        text: 'The Feeling First',
+      },
+      {
+        type: 'text',
+        text: 'Do you want to feel expansive — freed from obligation, opened to the largeness of the world? Or do you want to feel held — cocooned in warmth, in intimacy, in the particular softness that comes from being exquisitely cared for? Are you seeking adventure tempered by elegance? Solitude tempered by connection? The answer shapes everything.',
+      },
+      {
+        type: 'text',
+        text: 'A couple seeking renewal after a difficult year does not need the same Amalfi Coast as a pair of friends celebrating a milestone birthday. The geography may overlap. The emotional architecture is entirely different. One calls for stillness and privacy — long mornings, quiet dinners, unhurried days. The other calls for movement and joy — boat trips, discovery, tables shared with strangers who become friends.',
+      },
+      {
+        type: 'heading',
+        text: 'The Architecture of a Perfect Day',
+      },
+      {
+        type: 'text',
+        text: 'Once we understand the emotional destination, we begin constructing the days. Not hour by hour — rigidity is the enemy of wonder — but in broad, beautiful movements. A morning with intention. An afternoon with freedom. An evening that feels inevitable in the best possible way. We think about pacing the way a composer thinks about a symphony. There must be moments of crescendo and moments of silence. There must be surprise.',
+      },
+      {
+        type: 'text',
+        text: 'The private dinner on the rooftop of a Marrakech riad, arranged just so, on just that evening, because we knew the moon would be full and the air would be warm with the last breath of summer. The spontaneous detour to a vineyard in the Luberon, because our driver mentioned it and we had built enough white space into the day for such things. These are not accidents. They are designed.',
+      },
+      {
+        type: 'heading',
+        text: 'What We Remember',
+      },
+      {
+        type: 'text',
+        text: 'Research in the psychology of memory tells us that we remember peak moments and endings — not the cumulative average of an experience. A journey can have an imperfect middle and still be unforgettable, if its peaks are extraordinary and its ending is right. We keep this in mind always.',
+      },
+      {
+        type: 'text',
+        text: 'The last dinner. The final morning. The drive to the airport, which we try to route — always — past something beautiful. We want the last thing you see to be worthy of everything that came before it. Because how you feel when you return home is, in the end, the true measure of a journey.',
+      },
+    ],
+  },
+];
+
 export default function SoleilNacreWebsite() {
   const [activePage, setActivePage] = useState('home');
+  const [activeJournalPost, setActiveJournalPost] = useState<string | null>(null);
 
-  // Contact form state
   const [formFields, setFormFields] = useState({
     firstname: '',
     lastname: '',
@@ -93,23 +246,11 @@ export default function SoleilNacreWebsite() {
     },
   ];
 
-  const journalPosts = [
-    {
-      title: 'The New Era of Quiet Luxury Travel',
-      category: 'Editorial',
-      image: 'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1600&auto=format&fit=crop',
-    },
-    {
-      title: 'Private Villas Worth Escaping To',
-      category: 'Destinations',
-      image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop',
-    },
-    {
-      title: 'Designing Journeys Around Emotion',
-      category: 'Travel Philosophy',
-      image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1600&auto=format&fit=crop',
-    },
-  ];
+  const navigateTo = (page: string, journalId?: string) => {
+    setActivePage(page);
+    setActiveJournalPost(journalId || null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const renderHome = () => (
     <>
@@ -121,17 +262,13 @@ export default function SoleilNacreWebsite() {
         />
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative z-10 text-center px-6 max-w-5xl">
-          <p className="uppercase tracking-[0.45em] text-white/70 text-sm mb-8">
-            Private Luxury Travel Concierge
-          </p>
-          <h1 className="text-6xl md:text-8xl font-serif text-white leading-tight tracking-wide">
-            SOLEIL NACRE
-          </h1>
+          <p className="uppercase tracking-[0.45em] text-white/70 text-sm mb-8">Private Luxury Travel Concierge</p>
+          <h1 className="text-6xl md:text-8xl font-serif text-white leading-tight tracking-wide">SOLEIL NACRE</h1>
           <p className="mt-10 text-lg md:text-2xl text-white/90 leading-relaxed max-w-3xl mx-auto">
             Privately curated global journeys shaped by elegance, discretion, and exceptional personal attention.
           </p>
           <button
-            onClick={() => setActivePage('contact')}
+            onClick={() => navigateTo('contact')}
             className="mt-12 px-8 py-4 bg-white text-black rounded-full uppercase tracking-[0.2em] text-sm hover:opacity-90 transition"
           >
             Begin Your Journey
@@ -153,7 +290,7 @@ export default function SoleilNacreWebsite() {
               Every itinerary is shaped with precision, elevated hospitality, and quiet sophistication.
             </p>
             <button
-              onClick={() => setActivePage('about')}
+              onClick={() => navigateTo('about')}
               className="mt-10 px-8 py-4 border border-black text-black rounded-full uppercase tracking-[0.2em] text-sm hover:bg-black hover:text-white transition"
             >
               Our Philosophy
@@ -212,7 +349,7 @@ export default function SoleilNacreWebsite() {
                 <h3 className="text-3xl font-serif mb-4">{journey.title}</h3>
                 <p className="text-[#555] leading-relaxed text-lg">{journey.description}</p>
                 <button
-                  onClick={() => setActivePage('contact')}
+                  onClick={() => navigateTo('contact')}
                   className="mt-6 text-sm uppercase tracking-[0.2em] underline underline-offset-4 text-[#8A7E73] hover:text-black transition"
                 >
                   Enquire
@@ -249,7 +386,7 @@ export default function SoleilNacreWebsite() {
         </div>
         <div className="text-center mt-16">
           <button
-            onClick={() => setActivePage('contact')}
+            onClick={() => navigateTo('contact')}
             className="px-10 py-5 bg-white text-black rounded-full uppercase tracking-[0.2em] text-sm hover:opacity-90 transition"
           >
             Begin Your Journey
@@ -267,19 +404,104 @@ export default function SoleilNacreWebsite() {
           <h1 className="text-5xl md:text-7xl font-serif leading-tight">Stories, destinations, and travel inspiration.</h1>
         </div>
         <div className="grid md:grid-cols-3 gap-10">
-          {journalPosts.map((post, index) => (
-            <div key={index} className="bg-white rounded-[2rem] overflow-hidden shadow-lg">
-              <img src={post.image} alt={post.title} className="h-[380px] w-full object-cover" />
+          {journalPosts.map((post) => (
+            <button
+              key={post.id}
+              onClick={() => navigateTo('journal-post', post.id)}
+              className="bg-white rounded-[2rem] overflow-hidden shadow-lg text-left group hover:shadow-xl transition-shadow duration-300"
+            >
+              <div className="overflow-hidden">
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="h-[380px] w-full object-cover group-hover:scale-105 transition duration-700"
+                />
+              </div>
               <div className="p-8">
                 <p className="uppercase tracking-[0.25em] text-xs text-[#8A7E73] mb-4">{post.category}</p>
-                <h3 className="text-3xl font-serif leading-snug">{post.title}</h3>
+                <h3 className="text-3xl font-serif leading-snug mb-4">{post.title}</h3>
+                <p className="text-[#777] text-base leading-relaxed mb-6">{post.excerpt}</p>
+                <span className="text-sm uppercase tracking-[0.2em] underline underline-offset-4 text-[#8A7E73] group-hover:text-black transition">
+                  Read More → 
+                </span>
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
     </section>
   );
+
+  const renderJournalPost = () => {
+    const post = journalPosts.find((p) => p.id === activeJournalPost);
+    if (!post) return null;
+
+    return (
+      <article className="pt-40 pb-28 px-6 md:px-16 bg-white min-h-screen">
+        <div className="max-w-3xl mx-auto">
+          {/* Back link */}
+          <button
+            onClick={() => navigateTo('journal')}
+            className="flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-[#8A7E73] hover:text-black transition mb-14"
+          >
+            ← Back to Journal
+          </button>
+
+          {/* Category & meta */}
+          <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">{post.category}</p>
+
+          {/* Title */}
+          <h1 className="text-5xl md:text-6xl font-serif leading-tight mb-6">{post.title}</h1>
+
+          <p className="text-[#999] text-sm uppercase tracking-[0.15em] mb-12">{post.readTime}</p>
+
+          {/* Hero image */}
+          <img
+            src={post.image}
+            alt={post.title}
+            className="w-full h-[500px] object-cover rounded-[2rem] mb-16 shadow-xl"
+          />
+
+          {/* Body content */}
+          <div className="prose-content space-y-8">
+            {post.content.map((block, i) => {
+              if (block.type === 'intro') {
+                return (
+                  <p key={i} className="text-2xl leading-relaxed text-[#222] font-serif italic">
+                    {block.text}
+                  </p>
+                );
+              }
+              if (block.type === 'heading') {
+                return (
+                  <h2 key={i} className="text-3xl font-serif mt-14 mb-2 text-[#111]">
+                    {block.text}
+                  </h2>
+                );
+              }
+              return (
+                <p key={i} className="text-lg leading-relaxed text-[#444]">
+                  {block.text}
+                </p>
+              );
+            })}
+          </div>
+
+          {/* CTA */}
+          <div className="mt-20 pt-12 border-t border-[#EEE] text-center">
+            <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">Ready to Experience This?</p>
+            <h3 className="text-4xl font-serif mb-8">Let us craft your perfect journey.</h3>
+            <button
+              onClick={() => navigateTo('contact')}
+              className="px-10 py-5 bg-black text-white rounded-full uppercase tracking-[0.2em] text-sm hover:opacity-90 transition"
+            >
+              Begin Your Journey
+            </button>
+          </div>
+        </div>
+      </article>
+    );
+  };
 
   const renderContact = () => (
     <section className="pt-40 pb-28 px-6 md:px-16 bg-white min-h-screen">
@@ -320,7 +542,6 @@ export default function SoleilNacreWebsite() {
                 className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg focus:outline-none focus:border-[#8A7E73]"
               />
             </div>
-
             <input
               type="email"
               name="email"
@@ -330,7 +551,6 @@ export default function SoleilNacreWebsite() {
               onChange={handleFieldChange}
               className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg focus:outline-none focus:border-[#8A7E73]"
             />
-
             <input
               type="text"
               name="destination"
@@ -339,7 +559,6 @@ export default function SoleilNacreWebsite() {
               onChange={handleFieldChange}
               className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg focus:outline-none focus:border-[#8A7E73]"
             />
-
             <textarea
               rows={7}
               name="message"
@@ -348,11 +567,9 @@ export default function SoleilNacreWebsite() {
               onChange={handleFieldChange}
               className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg focus:outline-none focus:border-[#8A7E73]"
             />
-
             {formStatus === 'error' && (
               <p className="text-red-600 text-sm">⚠ {formError}</p>
             )}
-
             <button
               type="submit"
               disabled={formStatus === 'loading'}
@@ -371,17 +588,16 @@ export default function SoleilNacreWebsite() {
       <nav className="fixed top-0 left-0 w-full z-50 bg-black/30 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-5 text-white">
           <button
-            onClick={() => setActivePage('home')}
+            onClick={() => navigateTo('home')}
             className="text-2xl tracking-[0.35em] font-serif"
           >
             SOLEIL NACRE
           </button>
-
           <div className="hidden md:flex items-center gap-10 text-sm uppercase tracking-[0.2em] text-white/80">
             {navigation.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActivePage(item.id)}
+                onClick={() => navigateTo(item.id)}
                 className={`hover:text-white transition ${activePage === item.id ? 'text-white' : ''}`}
               >
                 {item.label}
@@ -396,6 +612,7 @@ export default function SoleilNacreWebsite() {
       {activePage === 'journeys' && renderJourneys()}
       {activePage === 'services' && renderServices()}
       {activePage === 'journal' && renderJournal()}
+      {activePage === 'journal-post' && renderJournalPost()}
       {activePage === 'contact' && renderContact()}
 
       <footer className="bg-black text-white py-14 px-6">
@@ -404,7 +621,6 @@ export default function SoleilNacreWebsite() {
             <h3 className="text-3xl font-serif tracking-[0.25em]">SOLEIL NACRE</h3>
             <p className="mt-4 uppercase tracking-[0.25em] text-xs text-white/60">Privately Curated Global Journeys</p>
           </div>
-
           <div className="flex gap-8 text-sm uppercase tracking-[0.2em] text-white/70">
             <a
               href="https://www.instagram.com/soleil_nacre"
@@ -414,15 +630,14 @@ export default function SoleilNacreWebsite() {
             >
               Instagram
             </a>
-<button
-              onClick={() => setActivePage('contact')}
+            <button
+              onClick={() => navigateTo('contact')}
               className="hover:text-white transition"
             >
               Contact
             </button>
           </div>
         </div>
-
         <div className="mt-12 border-t border-white/10 pt-8 text-center text-white/40 text-sm">
           © 2026 Soleil Nacre. All rights reserved.
         </div>
