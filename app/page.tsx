@@ -1,8 +1,67 @@
 'use client';
 import { useState } from 'react';
 
+const HUBSPOT_PORTAL_ID = '246050824';
+const HUBSPOT_FORM_GUID = '87de2666-5e92-470d-bb83-15cc7863142a';
+
 export default function SoleilNacreWebsite() {
   const [activePage, setActivePage] = useState('home');
+
+  // Contact form state
+  const [formFields, setFormFields] = useState({
+    firstname: '',
+    lastname: '',
+    email: '',
+    destination: '',
+    message: '',
+  });
+  const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [formError, setFormError] = useState('');
+
+  const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormFields({ ...formFields, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormStatus('loading');
+    setFormError('');
+
+    const payload = {
+      fields: [
+        { name: 'firstname', value: formFields.firstname },
+        { name: 'lastname', value: formFields.lastname },
+        { name: 'email', value: formFields.email },
+        { name: 'message', value: `Destination: ${formFields.destination}\n\n${formFields.message}` },
+      ],
+      context: {
+        pageUri: typeof window !== 'undefined' ? window.location.href : '',
+        pageName: 'Soleil Nacre — Inquiry',
+      },
+    };
+
+    try {
+      const res = await fetch(
+        `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_GUID}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || 'Submission failed');
+      }
+
+      setFormStatus('success');
+      setFormFields({ firstname: '', lastname: '', email: '', destination: '', message: '' });
+    } catch (err: unknown) {
+      setFormStatus('error');
+      setFormError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    }
+  };
 
   const navigation = [
     { id: 'home', label: 'Home' },
@@ -17,26 +76,20 @@ export default function SoleilNacreWebsite() {
     {
       title: 'Mediterranean Summers',
       location: 'Amalfi • Mykonos • Saint‑Tropez',
-      image:
-        'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=1600&auto=format&fit=crop',
-      description:
-        'Private villas, yacht charters, cliffside dining, and elegant coastal escapes designed around effortless luxury.',
+      image: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=1600&auto=format&fit=crop',
+      description: 'Private villas, yacht charters, cliffside dining, and elegant coastal escapes designed around effortless luxury.',
     },
     {
       title: 'Alpine Escapes',
       location: 'Swiss Alps • Courchevel • Dolomites',
-      image:
-        'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1600&auto=format&fit=crop',
-      description:
-        'Elevated mountain retreats featuring world‑class hospitality, wellness sanctuaries, and refined winter experiences.',
+      image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1600&auto=format&fit=crop',
+      description: 'Elevated mountain retreats featuring world‑class hospitality, wellness sanctuaries, and refined winter experiences.',
     },
     {
       title: 'Island Hideaways',
       location: 'Maldives • Seychelles • Bali',
-      image:
-        'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop',
-      description:
-        'Secluded beachfront villas and intimate island experiences crafted for privacy, serenity, and exceptional comfort.',
+      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop',
+      description: 'Secluded beachfront villas and intimate island experiences crafted for privacy, serenity, and exceptional comfort.',
     },
   ];
 
@@ -44,20 +97,17 @@ export default function SoleilNacreWebsite() {
     {
       title: 'The New Era of Quiet Luxury Travel',
       category: 'Editorial',
-      image:
-        'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1600&auto=format&fit=crop',
+      image: 'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1600&auto=format&fit=crop',
     },
     {
       title: 'Private Villas Worth Escaping To',
       category: 'Destinations',
-      image:
-        'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop',
+      image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop',
     },
     {
       title: 'Designing Journeys Around Emotion',
       category: 'Travel Philosophy',
-      image:
-        'https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1600&auto=format&fit=crop',
+      image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1600&auto=format&fit=crop',
     },
   ];
 
@@ -69,23 +119,17 @@ export default function SoleilNacreWebsite() {
           alt="Luxury destination"
           className="absolute inset-0 w-full h-full object-cover"
         />
-
         <div className="absolute inset-0 bg-black/50" />
-
         <div className="relative z-10 text-center px-6 max-w-5xl">
           <p className="uppercase tracking-[0.45em] text-white/70 text-sm mb-8">
             Private Luxury Travel Concierge
           </p>
-
           <h1 className="text-6xl md:text-8xl font-serif text-white leading-tight tracking-wide">
             SOLEIL NACRE
           </h1>
-
           <p className="mt-10 text-lg md:text-2xl text-white/90 leading-relaxed max-w-3xl mx-auto">
-            Privately curated global journeys shaped by elegance,
-            discretion, and exceptional personal attention.
+            Privately curated global journeys shaped by elegance, discretion, and exceptional personal attention.
           </p>
-
           <button
             onClick={() => setActivePage('contact')}
             className="mt-12 px-8 py-4 bg-white text-black rounded-full uppercase tracking-[0.2em] text-sm hover:opacity-90 transition"
@@ -98,25 +142,23 @@ export default function SoleilNacreWebsite() {
       <section className="py-28 px-6 md:px-16 bg-[#F7F3EE]">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
           <div>
-            <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">
-              Our Philosophy
-            </p>
-
+            <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">Our Philosophy</p>
             <h2 className="text-5xl md:text-6xl font-serif leading-tight mb-10">
               Travel designed around how you wish to experience the world.
             </h2>
-
             <p className="text-lg leading-relaxed text-[#444] mb-6">
-              Soleil Nacre curates bespoke journeys for discerning travelers who
-              value refinement, privacy, and seamless experiences.
+              Soleil Nacre curates bespoke journeys for discerning travelers who value refinement, privacy, and seamless experiences.
             </p>
-
             <p className="text-lg leading-relaxed text-[#444]">
-              Every itinerary is shaped with precision, elevated hospitality,
-              and quiet sophistication.
+              Every itinerary is shaped with precision, elevated hospitality, and quiet sophistication.
             </p>
+            <button
+              onClick={() => setActivePage('about')}
+              className="mt-10 px-8 py-4 border border-black text-black rounded-full uppercase tracking-[0.2em] text-sm hover:bg-black hover:text-white transition"
+            >
+              Our Philosophy
+            </button>
           </div>
-
           <div>
             <img
               src="https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1600&auto=format&fit=crop"
@@ -133,38 +175,20 @@ export default function SoleilNacreWebsite() {
     <section className="pt-40 pb-28 px-6 md:px-16 bg-[#F7F3EE] min-h-screen">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-20 items-center">
         <div>
-          <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">
-            About Soleil Nacre
-          </p>
-
+          <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">About Soleil Nacre</p>
           <h1 className="text-5xl md:text-7xl font-serif leading-tight mb-10">
             Elevated travel shaped by refinement and emotion.
           </h1>
-
           <div className="space-y-8 text-lg leading-relaxed text-[#444]">
-            <p>
-              Soleil Nacre was founded around the belief that luxury travel
-              should feel deeply personal, effortless, and emotionally
-              unforgettable.
-            </p>
-
-            <p>
-              We design bespoke global journeys for travelers seeking refined
-              hospitality, exceptional destinations, and discreet concierge
-              service.
-            </p>
-
-            <p>
-              From coastal escapes and alpine retreats to private island
-              experiences and modern cosmopolitan journeys, every itinerary is
-              tailored entirely around your preferences.
-            </p>
+            <p>Soleil Nacre was founded around the belief that luxury travel should feel deeply personal, effortless, and emotionally unforgettable.</p>
+            <p>We design bespoke global journeys for travelers seeking refined hospitality, exceptional destinations, and discreet concierge service.</p>
+            <p>From coastal escapes and alpine retreats to private island experiences and modern cosmopolitan journeys, every itinerary is tailored entirely around your preferences.</p>
           </div>
         </div>
-
         <img
           src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop"
           className="rounded-[2.5rem] shadow-2xl h-[700px] object-cover w-full"
+          alt="Luxury interior"
         />
       </div>
     </section>
@@ -174,39 +198,25 @@ export default function SoleilNacreWebsite() {
     <section className="pt-40 pb-28 px-6 md:px-16 bg-white min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
-          <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">
-            Signature Journeys
-          </p>
-
-          <h1 className="text-5xl md:text-7xl font-serif leading-tight">
-            Curated experiences across the world.
-          </h1>
+          <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">Signature Journeys</p>
+          <h1 className="text-5xl md:text-7xl font-serif leading-tight">Curated experiences across the world.</h1>
         </div>
-
         <div className="grid md:grid-cols-3 gap-10">
           {journeyData.map((journey, index) => (
-            <div
-              key={index}
-              className="group bg-[#F7F3EE] rounded-[2rem] overflow-hidden shadow-lg"
-            >
+            <div key={index} className="group bg-[#F7F3EE] rounded-[2rem] overflow-hidden shadow-lg">
               <div className="overflow-hidden">
-                <img
-                  src={journey.image}
-                  alt={journey.title}
-                  className="h-[450px] w-full object-cover group-hover:scale-105 transition duration-700"
-                />
+                <img src={journey.image} alt={journey.title} className="h-[450px] w-full object-cover group-hover:scale-105 transition duration-700" />
               </div>
-
               <div className="p-8">
-                <p className="uppercase tracking-[0.25em] text-xs text-[#8A7E73] mb-4">
-                  {journey.location}
-                </p>
-
+                <p className="uppercase tracking-[0.25em] text-xs text-[#8A7E73] mb-4">{journey.location}</p>
                 <h3 className="text-3xl font-serif mb-4">{journey.title}</h3>
-
-                <p className="text-[#555] leading-relaxed text-lg">
-                  {journey.description}
-                </p>
+                <p className="text-[#555] leading-relaxed text-lg">{journey.description}</p>
+                <button
+                  onClick={() => setActivePage('contact')}
+                  className="mt-6 text-sm uppercase tracking-[0.2em] underline underline-offset-4 text-[#8A7E73] hover:text-black transition"
+                >
+                  Enquire
+                </button>
               </div>
             </div>
           ))}
@@ -219,15 +229,9 @@ export default function SoleilNacreWebsite() {
     <section className="pt-40 pb-28 px-6 md:px-16 bg-[#111111] text-white min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
-          <p className="uppercase tracking-[0.35em] text-[#C8B8A6] text-sm mb-6">
-            Concierge Services
-          </p>
-
-          <h1 className="text-5xl md:text-7xl font-serif leading-tight">
-            Every detail considered.
-          </h1>
+          <p className="uppercase tracking-[0.35em] text-[#C8B8A6] text-sm mb-6">Concierge Services</p>
+          <h1 className="text-5xl md:text-7xl font-serif leading-tight">Every detail considered.</h1>
         </div>
-
         <div className="grid md:grid-cols-2 gap-8">
           {[
             'Privately curated itineraries tailored entirely around your travel preferences.',
@@ -237,19 +241,19 @@ export default function SoleilNacreWebsite() {
             'Restaurant reservations, private tours, and bespoke local experiences.',
             'Dedicated concierge support before, during, and after travel.',
           ].map((service, index) => (
-            <div
-              key={index}
-              className="border border-white/10 rounded-[2rem] p-10 bg-white/5"
-            >
-              <div className="text-5xl text-white/20 mb-6">
-                0{index + 1}
-              </div>
-
-              <p className="text-xl leading-relaxed text-white/85">
-                {service}
-              </p>
+            <div key={index} className="border border-white/10 rounded-[2rem] p-10 bg-white/5">
+              <div className="text-5xl text-white/20 mb-6">0{index + 1}</div>
+              <p className="text-xl leading-relaxed text-white/85">{service}</p>
             </div>
           ))}
+        </div>
+        <div className="text-center mt-16">
+          <button
+            onClick={() => setActivePage('contact')}
+            className="px-10 py-5 bg-white text-black rounded-full uppercase tracking-[0.2em] text-sm hover:opacity-90 transition"
+          >
+            Begin Your Journey
+          </button>
         </div>
       </div>
     </section>
@@ -259,35 +263,16 @@ export default function SoleilNacreWebsite() {
     <section className="pt-40 pb-28 px-6 md:px-16 bg-[#F7F3EE] min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
-          <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">
-            Journal
-          </p>
-
-          <h1 className="text-5xl md:text-7xl font-serif leading-tight">
-            Stories, destinations, and travel inspiration.
-          </h1>
+          <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">Journal</p>
+          <h1 className="text-5xl md:text-7xl font-serif leading-tight">Stories, destinations, and travel inspiration.</h1>
         </div>
-
         <div className="grid md:grid-cols-3 gap-10">
           {journalPosts.map((post, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-[2rem] overflow-hidden shadow-lg"
-            >
-              <img
-                src={post.image}
-                alt={post.title}
-                className="h-[380px] w-full object-cover"
-              />
-
+            <div key={index} className="bg-white rounded-[2rem] overflow-hidden shadow-lg">
+              <img src={post.image} alt={post.title} className="h-[380px] w-full object-cover" />
               <div className="p-8">
-                <p className="uppercase tracking-[0.25em] text-xs text-[#8A7E73] mb-4">
-                  {post.category}
-                </p>
-
-                <h3 className="text-3xl font-serif leading-snug">
-                  {post.title}
-                </h3>
+                <p className="uppercase tracking-[0.25em] text-xs text-[#8A7E73] mb-4">{post.category}</p>
+                <h3 className="text-3xl font-serif leading-snug">{post.title}</h3>
               </div>
             </div>
           ))}
@@ -299,49 +284,84 @@ export default function SoleilNacreWebsite() {
   const renderContact = () => (
     <section className="pt-40 pb-28 px-6 md:px-16 bg-white min-h-screen">
       <div className="max-w-4xl mx-auto text-center">
-        <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">
-          Begin Your Journey
-        </p>
-
+        <p className="uppercase tracking-[0.35em] text-[#8A7E73] text-sm mb-6">Begin Your Journey</p>
         <h1 className="text-5xl md:text-7xl font-serif leading-tight mb-10">
           Let us curate your next extraordinary escape.
         </h1>
-
         <p className="text-lg text-[#555] leading-relaxed mb-14 max-w-2xl mx-auto">
-          Share your preferred destinations, travel style, and desired dates,
-          and our concierge team will design an experience tailored entirely to
-          you.
+          Share your preferred destinations, travel style, and desired dates, and our concierge team will design an experience tailored entirely to you.
         </p>
 
-        <div className="grid gap-5 text-left">
-          <input
-            type="text"
-            placeholder="Full Name"
-            className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg"
-          />
+        {formStatus === 'success' ? (
+          <div className="py-16 px-10 bg-[#F7F3EE] rounded-[2rem] text-center">
+            <div className="text-5xl mb-6">✓</div>
+            <h2 className="text-3xl font-serif mb-4">Thank you for reaching out.</h2>
+            <p className="text-lg text-[#555]">Our concierge team will be in touch within 24 hours to begin crafting your journey.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="grid gap-5 text-left">
+            <div className="grid md:grid-cols-2 gap-5">
+              <input
+                type="text"
+                name="firstname"
+                placeholder="First Name"
+                required
+                value={formFields.firstname}
+                onChange={handleFieldChange}
+                className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg focus:outline-none focus:border-[#8A7E73]"
+              />
+              <input
+                type="text"
+                name="lastname"
+                placeholder="Last Name"
+                required
+                value={formFields.lastname}
+                onChange={handleFieldChange}
+                className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg focus:outline-none focus:border-[#8A7E73]"
+              />
+            </div>
 
-          <input
-            type="email"
-            placeholder="Email Address"
-            className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg"
-          />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              required
+              value={formFields.email}
+              onChange={handleFieldChange}
+              className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg focus:outline-none focus:border-[#8A7E73]"
+            />
 
-          <input
-            type="text"
-            placeholder="Preferred Destinations"
-            className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg"
-          />
+            <input
+              type="text"
+              name="destination"
+              placeholder="Preferred Destinations"
+              value={formFields.destination}
+              onChange={handleFieldChange}
+              className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg focus:outline-none focus:border-[#8A7E73]"
+            />
 
-          <textarea
-            rows={7}
-            placeholder="Tell us about your ideal journey"
-            className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg"
-          />
+            <textarea
+              rows={7}
+              name="message"
+              placeholder="Tell us about your ideal journey"
+              value={formFields.message}
+              onChange={handleFieldChange}
+              className="p-5 rounded-2xl border border-[#DDD] bg-[#F7F3EE] text-lg focus:outline-none focus:border-[#8A7E73]"
+            />
 
-          <button className="mt-4 bg-black text-white py-5 rounded-full uppercase tracking-[0.25em] text-sm hover:opacity-90 transition">
-            Submit Inquiry
-          </button>
-        </div>
+            {formStatus === 'error' && (
+              <p className="text-red-600 text-sm">⚠ {formError}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={formStatus === 'loading'}
+              className="mt-4 bg-black text-white py-5 rounded-full uppercase tracking-[0.25em] text-sm hover:opacity-90 transition disabled:opacity-50"
+            >
+              {formStatus === 'loading' ? 'Sending…' : 'Submit Inquiry'}
+            </button>
+          </form>
+        )}
       </div>
     </section>
   );
@@ -362,7 +382,7 @@ export default function SoleilNacreWebsite() {
               <button
                 key={item.id}
                 onClick={() => setActivePage(item.id)}
-                className="hover:text-white transition"
+                className={`hover:text-white transition ${activePage === item.id ? 'text-white' : ''}`}
               >
                 {item.label}
               </button>
@@ -381,19 +401,33 @@ export default function SoleilNacreWebsite() {
       <footer className="bg-black text-white py-14 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
           <div>
-            <h3 className="text-3xl font-serif tracking-[0.25em]">
-              SOLEIL NACRE
-            </h3>
-
-            <p className="mt-4 uppercase tracking-[0.25em] text-xs text-white/60">
-              Privately Curated Global Journeys
-            </p>
+            <h3 className="text-3xl font-serif tracking-[0.25em]">SOLEIL NACRE</h3>
+            <p className="mt-4 uppercase tracking-[0.25em] text-xs text-white/60">Privately Curated Global Journeys</p>
           </div>
 
           <div className="flex gap-8 text-sm uppercase tracking-[0.2em] text-white/70">
-            <a href="#">Instagram</a>
-            <a href="#">LinkedIn</a>
-            <a href="#">Contact</a>
+            <a
+              href="https://www.instagram.com/soleilnacre"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition"
+            >
+              Instagram
+            </a>
+            <a
+              href="https://www.linkedin.com/company/soleilnacre"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition"
+            >
+              LinkedIn
+            </a>
+            <button
+              onClick={() => setActivePage('contact')}
+              className="hover:text-white transition"
+            >
+              Contact
+            </button>
           </div>
         </div>
 
