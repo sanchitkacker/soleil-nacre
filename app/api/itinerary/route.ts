@@ -42,8 +42,8 @@ function getDestinationPhotos(message: string): string[] {
 async function fetchImageBuffer(url: string): Promise<Buffer | null> {
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(url, { signal: controller.signal });
+    const timer = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch(url + '&w=600&q=60', { signal: controller.signal });
     clearTimeout(timer);
     if (!res.ok) return null;
     return Buffer.from(await res.arrayBuffer());
@@ -81,8 +81,8 @@ async function generatePDF(firstname: string, lastname: string, itinerary: strin
     const margin = 56;
     const accentColors = ['#8A7E73', '#6B7B8D', '#7D8B6E', '#8D6E7D', '#6E8D8A'];
 
-    // Fetch photos
-    const photoBuffers = await Promise.all(photoUrls.slice(0, 3).map(fetchImageBuffer));
+    // Fetch only ONE small cover photo to keep PDF generation fast
+    const photoBuffers = [await fetchImageBuffer(photoUrls[0]), null, null];
 
     // ── PAGE 1: Cover ────────────────────────────────────────────────────
     doc.addPage();
@@ -120,35 +120,7 @@ async function generatePDF(firstname: string, lastname: string, itinerary: strin
     doc.fontSize(9).font('Helvetica').fillColor('#C8B8A6')
       .text(`Prepared exclusively for ${firstname} ${lastname}`, 0, H * 0.38 + 136, { align: 'center', characterSpacing: 2, width: W });
 
-    // ── PAGE 2: Photos ───────────────────────────────────────────────────
-    doc.addPage();
-    doc.rect(0, 0, W, H).fill('#F7F3EE');
-
-    doc.fontSize(9).font('Helvetica').fillColor('#8A7E73')
-      .text('YOUR DESTINATION', margin, 52, { characterSpacing: 3, width: W - margin * 2, align: 'center' });
-
-    const gap = 10;
-    const col1W = (W - margin * 2) * 0.55;
-    const col2W = W - margin * 2 - col1W - gap;
-    const rowH = (H - 160) / 2 - gap / 2;
-
-    // Large left photo
-    if (photoBuffers[0]) {
-      try { doc.image(photoBuffers[0], margin, 88, { width: col1W, height: rowH * 2 + gap, cover: [col1W, rowH * 2 + gap] }); } catch {}
-    } else { doc.rect(margin, 88, col1W, rowH * 2 + gap).fill('#DDD'); }
-
-    // Top right photo
-    if (photoBuffers[1]) {
-      try { doc.image(photoBuffers[1], margin + col1W + gap, 88, { width: col2W, height: rowH, cover: [col2W, rowH] }); } catch {}
-    } else { doc.rect(margin + col1W + gap, 88, col2W, rowH).fill('#DDD'); }
-
-    // Bottom right photo
-    if (photoBuffers[2]) {
-      try { doc.image(photoBuffers[2], margin + col1W + gap, 88 + rowH + gap, { width: col2W, height: rowH, cover: [col2W, rowH] }); } catch {}
-    } else { doc.rect(margin + col1W + gap, 88 + rowH + gap, col2W, rowH).fill('#DDD'); }
-
-    doc.fontSize(9).font('Helvetica').fillColor('#C8B8A6')
-      .text('soleilnacre.com', 0, H - 52, { align: 'center', width: W, characterSpacing: 2 });
+    // (Photo grid page removed for performance — cover photo used instead)
 
     // ── PAGE 3+: Itinerary ───────────────────────────────────────────────
     doc.addPage();
@@ -285,7 +257,7 @@ Write elegantly. Include Day 1-5 with Morning:, Afternoon:, Evening: sections. N
     try {
       const pdfPromise = generatePDF(firstname, lastname, itinerary, photoUrls);
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('PDF timeout after 25s')), 25000)
+        setTimeout(() => reject(new Error('PDF timeout after 40s')), 40000)
       );
       const pdfBuffer = await Promise.race([pdfPromise, timeoutPromise]);
       pdfBase64 = pdfBuffer.toString('base64');
