@@ -407,22 +407,14 @@ export default function SoleilNacreWebsite() {
 
           <div className="flex gap-8 text-sm uppercase tracking-[0.2em] text-white/70">
             <a
-              href="https://www.instagram.com/soleilnacre"
+              href="https://www.instagram.com/soleil_nacre"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-white transition"
             >
               Instagram
             </a>
-            <a
-              href="https://www.linkedin.com/company/soleilnacre"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition"
-            >
-              LinkedIn
-            </a>
-            <button
+<button
               onClick={() => setActivePage('contact')}
               className="hover:text-white transition"
             >
