@@ -5,6 +5,9 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = 'concierge@soleilnacre.com';
 
+// Extend Vercel function timeout to 60s (default is 10s — too short for Claude + Resend)
+export const maxDuration = 60;
+
 // GET endpoint — for testing the route is live and env vars are set
 export async function GET() {
   return NextResponse.json({
