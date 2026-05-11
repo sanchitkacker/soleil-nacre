@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Tenor+Sans&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.hero h1, .hero-eyebrow, .hero-sub { will-change: opacity, transform; }
 html { scroll-behavior: smooth; }
 
 :root {
@@ -174,7 +175,7 @@ h2 em { font-style: italic; color: var(--gold); }
 .journeys-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 60px; }
 .journeys-intro p { color: var(--muted); line-height: 1.9; }
 .journey-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.journey-card { position: relative; overflow: hidden; cursor: none; }
+.journey-card { position: relative; overflow: hidden; cursor: pointer; }
 .journey-img { height: 420px; position: relative; overflow: hidden; background-size: cover; background-position: center; }
 .journey-img .fill { position: absolute; inset: 0; transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); }
 .journey-card:hover .journey-img { transform: scale(1.03); transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); }
@@ -249,7 +250,7 @@ h2 em { font-style: italic; color: var(--gold); }
 .inquiry-form input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(184,150,90,0.3); border-right: none; color: var(--ivory); padding: 14px 20px; font-family: 'Tenor Sans', sans-serif; font-size: 13px; outline: none; }
 .inquiry-form input::placeholder { color: rgba(245,240,232,0.3); }
 .inquiry-form input:focus { border-color: var(--gold); }
-.inquiry-form button { background: var(--gold); color: var(--ivory); border: none; padding: 14px 28px; font-family: 'Tenor Sans', sans-serif; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; cursor: none; transition: background 0.25s; }
+.inquiry-form button { background: var(--gold); color: var(--ivory); border: none; padding: 14px 28px; font-family: 'Tenor Sans', sans-serif; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.25s; }
 .inquiry-form button:hover { background: var(--gold-light); }
 .inquiry-note { font-size: 11px; color: rgba(245,240,232,0.25); letter-spacing: 0.1em; }
 
@@ -305,3 +306,53 @@ footer { background: #100e0b; color: var(--ivory); padding: 70px 60px 40px; }
   .inquiry-form input { border-right: 1px solid rgba(184,150,90,0.3); border-bottom: none; }
   body { cursor: auto; } .cursor, .cursor-ring { display: none; }
 }
+
+/* Mobile nav open state */
+.nav-links.open {
+  display: flex !important;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--ivory);
+  z-index: 99;
+  justify-content: center;
+  align-items: center;
+  gap: 36px;
+}
+.nav-links.open a {
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  opacity: 1;
+  color: var(--deep);
+}
+.nav-close {
+  display: none;
+  position: fixed;
+  top: 24px; right: 24px;
+  z-index: 100;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: var(--deep);
+  cursor: pointer;
+  line-height: 1;
+}
+.nav-close.visible { display: block; }
+
+/* Fix 12: Toast notification */
+.toast {
+  position: fixed;
+  bottom: 32px; right: 32px;
+  background: var(--deep);
+  color: var(--ivory);
+  padding: 14px 24px;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  border-left: 3px solid var(--gold);
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.4s, transform 0.4s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
