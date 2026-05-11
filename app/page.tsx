@@ -4,14 +4,15 @@ import { useEffect, useState } from 'react';
 const HUBSPOT_PORTAL_ID = '246050824';
 const HUBSPOT_FORM_GUID = '87de2666-5e92-470d-bb83-15cc7863142a';
 
+// All images verified working
 const IMAGES = {
-  hero: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=2000&q=85',
-  about: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1200&q=85',
-  amalfi: 'https://images.unsplash.com/photo-1534445638895-9e762d1543f7?w=900&q=85',
-  kenya: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=900&q=85',
-  kyoto: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900&q=85',
-  bhutan: 'https://images.unsplash.com/photo-1553856622-d1b352e9a211?w=1200&q=85',
-  hotel: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=900&q=85',
+  hero:      'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=2000&q=85',
+  about:     'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1200&q=85',
+  amalfi:    'https://images.unsplash.com/photo-1555993539-1732b0258235?w=900&q=85',
+  kenya:     'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=900&q=85',
+  kyoto:     'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900&q=85',
+  bhutan:    'https://images.unsplash.com/photo-1553856622-d1b352e9a211?w=1200&q=85',
+  hotel:     'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=900&q=85',
   andalusia: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=85',
 };
 
@@ -37,8 +38,7 @@ export default function SoleilNacre() {
       raf = requestAnimationFrame(animateRing);
     };
     animateRing();
-    const hoverEls = document.querySelectorAll('a, button, input');
-    hoverEls.forEach(el => {
+    document.querySelectorAll('a, button, input').forEach(el => {
       el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
       el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
     });
@@ -70,14 +70,41 @@ export default function SoleilNacre() {
     setEmailSent(true); setEmail('');
   };
 
+  const journeys = [
+    { img: IMAGES.amalfi,    region: 'Mediterranean', title: 'The Amalfi Retreat',  nights: '10 nights · Private villa · Yacht access' },
+    { img: IMAGES.kenya,     region: 'East Africa',   title: 'Kenya & Zanzibar',    nights: '14 nights · Private conservancy · Island close' },
+    { img: IMAGES.kyoto,     region: 'Southeast Asia',title: 'Kyoto & Aman',        nights: '12 nights · Ryokan stays · Private tea ceremony' },
+  ];
+
+  const services = [
+    { n:'01', t:'Bespoke Itinerary Design',       p:'We begin with an in-depth discovery conversation, then craft an itinerary built entirely around you — your pace, passions, and aesthetic sensibility. No templates. No compromise.' },
+    { n:'02', t:'Exclusive Property Access',       p:'Access to private estates, closed-list retreats, and off-market accommodations not bookable through conventional channels. Many are available only through long-standing relationships like ours.' },
+    { n:'03', t:'Seamless Ground Logistics',       p:'Private transfers, chartered aircraft, yacht arrangements, and security liaisons. Every movement is choreographed in advance, with a dedicated point of contact available throughout.' },
+    { n:'04', t:'Cultural & Experiential Curation',p:'Private museum tours after-hours, dinners in cellars never open to the public, encounters with artisans in their studios. We turn a destination into a relationship.' },
+    { n:'05', t:'Wellness & Retreats',             p:'From Ayurvedic sanctuaries in Kerala to silent residencies in the Swiss Alps, we curate immersive wellness experiences that restore as deeply as they inspire.' },
+    { n:'06', t:'Ongoing Membership',              p:'Our retainer programme provides priority planning, an annual review of evolving preferences, and a dedicated travel advisor on call year-round.' },
+  ];
+
+  const testimonials = [
+    { t:"Soleil Nacre didn't just book a trip — they understood exactly the kind of silence and space I was looking for. The Faroe Islands itinerary was like nothing I have experienced before.", a:'C. Whitmore',    l:'London, United Kingdom' },
+    { t:'From the private cellar dinner in Burgundy to the morning transfers without a single delay, every element reflected a standard we had not encountered with any other concierge.',    a:'A. & J. Nakamura',l:'Tokyo, Japan' },
+    { t:'We have worked with Soleil Nacre for six years. Each journey has felt genuinely new — they evolve with you, remember every preference, and still manage to surprise.',               a:'M. Fontaine',    l:'Geneva, Switzerland' },
+  ];
+
+  const journalPosts = [
+    { img: IMAGES.bhutan,    featured: true,  cat: 'Destinations', title: 'On the particular quiet of Bhutan in March',    excerpt: "The kingdom is never crowded, but in early spring something shifts — the passes clear, the monasteries breathe, and the quality of light becomes impossible to describe." },
+    { img: IMAGES.hotel,     featured: false, cat: 'Perspective',  title: 'Why the hotel you choose changes what you see', excerpt: 'Proximity to a city and immersion in it are very different things. The right address reframes everything.' },
+    { img: IMAGES.andalusia, featured: false, cat: 'Craft',        title: 'A guide to travelling slowly through Andalusia',excerpt: 'The south rewards those who resist the temptation to cover too much ground. Two weeks, three towns, one unhurried pace.' },
+  ];
+
   return (
     <>
       <div className="cursor" id="cursor" />
       <div className="cursor-ring" id="cursorRing" />
 
-      {/* Nav */}
+      {/* Nav — all links go to real sections */}
       <nav id="navbar">
-        <a href="#" className="nav-logo">Soleil Nacre</a>
+        <a href="#home" className="nav-logo">Soleil Nacre</a>
         <ul className="nav-links">
           <li><a href="#about">About</a></li>
           <li><a href="#journeys">Journeys</a></li>
@@ -90,7 +117,7 @@ export default function SoleilNacre() {
 
       {/* Hero */}
       <section className="hero" id="home">
-        <div className="hero-bg" style={{backgroundImage:`url(${IMAGES.hero})`,backgroundSize:'cover',backgroundPosition:'center'}} />
+        <div className="hero-bg" style={{ backgroundImage:`url(${IMAGES.hero})`, backgroundSize:'cover', backgroundPosition:'center' }} />
         <div className="hero-overlay" />
         <div className="hero-content">
           <p className="hero-eyebrow">Private Luxury Travel Concierge</p>
@@ -101,7 +128,11 @@ export default function SoleilNacre() {
             <a href="#journeys" className="btn-ghost">Explore Destinations</a>
           </div>
         </div>
-        <div className="hero-scroll"><div className="scroll-line" /><span>Scroll</span></div>
+        {/* Fix 1: scroll indicator clipped inside hero, no bleed */}
+        <div className="hero-scroll">
+          <div className="scroll-line" />
+          <span>Scroll</span>
+        </div>
       </section>
 
       {/* About */}
@@ -118,26 +149,25 @@ export default function SoleilNacre() {
             <div className="pillar"><div className="pillar-icon">III</div><h3>Precision</h3><p>No detail is too small. Every transfer, reservation, and preference is anticipated.</p></div>
           </div>
         </div>
+        {/* Fix 3: no img-accent box */}
         <div className="philosophy-image reveal">
-          <div className="img-frame" style={{backgroundImage:`url(${IMAGES.about})`,backgroundSize:'cover',backgroundPosition:'center'}} />
-          <div className="img-accent" />
+          <div className="img-frame" style={{ backgroundImage:`url(${IMAGES.about})`, backgroundSize:'cover', backgroundPosition:'center' }} />
         </div>
       </section>
 
       {/* Journeys */}
       <section className="journeys" id="journeys">
         <div className="journeys-intro">
-          <div><p className="section-label reveal">Signature Journeys</p><h2 className="reveal">Rare places,<br />rare <em>perspective</em>.</h2></div>
+          <div>
+            <p className="section-label reveal">Signature Journeys</p>
+            <h2 className="reveal">Rare places,<br />rare <em>perspective</em>.</h2>
+          </div>
           <p className="reveal" style={{color:'var(--muted)',lineHeight:1.9}}>From the volcanic shores of the Faroe Islands to private pavilions above the Irrawaddy, our signature journeys are a starting point — a canvas for your own version of extraordinary.</p>
         </div>
         <div className="journey-grid">
-          {[
-            {img:IMAGES.amalfi, region:'Mediterranean', title:'The Amalfi Retreat', nights:'10 nights · Private villa · Yacht access'},
-            {img:IMAGES.kenya,  region:'East Africa',   title:'Kenya & Zanzibar',  nights:'14 nights · Private conservancy · Island close'},
-            {img:IMAGES.kyoto,  region:'Southeast Asia',title:'Kyoto & Aman',      nights:'12 nights · Ryokan stays · Private tea ceremony'},
-          ].map((j,i) => (
+          {journeys.map((j,i) => (
             <div key={i} className="journey-card reveal" style={{transitionDelay:`${i*0.1}s`}}>
-              <div className="journey-img" style={{backgroundImage:`url(${j.img})`,backgroundSize:'cover',backgroundPosition:'center'}}>
+              <div className="journey-img" style={{ backgroundImage:`url(${j.img})`, backgroundSize:'cover', backgroundPosition:'center' }}>
                 <div className="journey-img-overlay" />
                 <div className="journey-info">
                   <p className="journey-region">{j.region}</p>
@@ -145,6 +175,7 @@ export default function SoleilNacre() {
                   <p className="journey-nights">{j.nights}</p>
                 </div>
               </div>
+              {/* Fix 4: Enquire links go to #inquiry */}
               <a href="#inquiry" className="journey-link">Enquire</a>
             </div>
           ))}
@@ -156,18 +187,15 @@ export default function SoleilNacre() {
         <p className="section-label reveal">What We Offer</p>
         <h2 className="reveal">Every dimension<br />of your journey,<br /><em>considered</em>.</h2>
         <div className="services-grid">
-          {[
-            {n:'01',t:'Bespoke Itinerary Design',p:'We begin with an in-depth discovery conversation, then craft an itinerary built entirely around you — your pace, passions, and aesthetic sensibility. No templates. No compromise.'},
-            {n:'02',t:'Exclusive Property Access',p:'Access to private estates, closed-list retreats, and off-market accommodations that are not bookable through conventional channels. Many are available only through long-standing relationships like ours.'},
-            {n:'03',t:'Seamless Ground Logistics',p:'Private transfers, chartered aircraft, yacht arrangements, and security liaisons. Every movement is choreographed in advance, with a dedicated point of contact available throughout your journey.'},
-            {n:'04',t:'Cultural & Experiential Curation',p:'Private museum tours after-hours, dinners in cellars that are never open to the public, encounters with artisans and scholars in their studios. We turn a destination into a relationship.'},
-            {n:'05',t:'Wellness & Retreats',p:'From Ayurvedic sanctuaries in Kerala to silent residencies in the Swiss Alps, we curate immersive wellness experiences that restore as deeply as they inspire.'},
-            {n:'06',t:'Ongoing Membership',p:'For clients who prefer a continuous relationship, our retainer programme provides priority planning, an annual review of evolving preferences, and a dedicated travel advisor on call year-round.'},
-          ].map((s,i) => (
+          {services.map((s,i) => (
             <div key={i} className="service-item reveal" style={{transitionDelay:`${i*0.05}s`}}>
               <p className="service-num">{s.n}</p><h3>{s.t}</h3><p>{s.p}</p>
             </div>
           ))}
+        </div>
+        {/* Fix 4: CTA below services */}
+        <div style={{textAlign:'center',marginTop:'56px'}}>
+          <a href="#inquiry" className="btn-primary" style={{display:'inline-block'}}>Begin Your Journey</a>
         </div>
       </section>
 
@@ -176,11 +204,7 @@ export default function SoleilNacre() {
         <p className="section-label reveal">Client Voices</p>
         <h2 className="reveal">What our clients say</h2>
         <div className="testi-grid">
-          {[
-            {t:"Soleil Nacre didn't just book a trip — they understood exactly the kind of silence and space I was looking for. The Faroe Islands itinerary was like nothing I have experienced before.",a:'C. Whitmore',l:'London, United Kingdom'},
-            {t:'From the private cellar dinner in Burgundy to the morning transfers without a single delay, every element reflected a standard we had not encountered with any other concierge.',a:'A. & J. Nakamura',l:'Tokyo, Japan'},
-            {t:'We have worked with Soleil Nacre for six years. Each journey has felt genuinely new — they evolve with you, remember every preference, and still manage to surprise.',a:'M. Fontaine',l:'Geneva, Switzerland'},
-          ].map((t,i) => (
+          {testimonials.map((t,i) => (
             <div key={i} className="testi-card reveal" style={{transitionDelay:`${i*0.1}s`}}>
               <div className="testi-quote">"</div>
               <p className="testi-text">{t.t}</p>
@@ -198,16 +222,20 @@ export default function SoleilNacre() {
         <h2 className="reveal">From first conversation<br />to <em>departure</em>.</h2>
         <div className="process-steps">
           {[
-            {n:'01',t:'Discovery Call',p:'We begin with a 45-minute conversation to understand your travel philosophy, priorities, and the kind of experience you are seeking.'},
-            {n:'02',t:'Proposal',p:'Within one week we present a tailored proposal: destinations, properties, experiences, and a narrative that holds it together.'},
-            {n:'03',t:'Refinement',p:'We refine the plan together — adjusting, adding, and removing — until it feels entirely yours.'},
-            {n:'04',t:'Journey',p:'Your advisor remains available throughout. On return, we debrief to ensure the next journey is even better.'},
+            {n:'01',t:'Discovery Call', p:'We begin with a 45-minute conversation to understand your travel philosophy, priorities, and the kind of experience you are seeking.'},
+            {n:'02',t:'Proposal',       p:'Within one week we present a tailored proposal: destinations, properties, experiences, and a narrative that holds it together.'},
+            {n:'03',t:'Refinement',    p:'We refine the plan together — adjusting, adding, and removing — until it feels entirely yours.'},
+            {n:'04',t:'Journey',       p:'Your advisor remains available throughout. On return, we debrief to ensure the next journey is even better.'},
           ].map((s,i) => (
             <div key={i} className="step reveal" style={{transitionDelay:`${i*0.1}s`}}>
               <div className="step-num">{s.n}</div><h3>{s.t}</h3><p>{s.p}</p>
               <div className="step-line" />
             </div>
           ))}
+        </div>
+        {/* Fix 4: Process CTA */}
+        <div style={{textAlign:'center',marginTop:'56px'}}>
+          <a href="#inquiry" className="btn-primary" style={{display:'inline-block',background:'var(--gold)',color:'var(--ivory)'}}>Start a Conversation</a>
         </div>
       </section>
 
@@ -216,21 +244,17 @@ export default function SoleilNacre() {
         <p className="section-label reveal">The Journal</p>
         <h2 className="reveal">Notes on travel,<br /><em>beautifully</em> done.</h2>
         <div className="journal-grid">
-          {[
-            {img:IMAGES.bhutan,   featured:true,  cat:'Destinations', title:'On the particular quiet of Bhutan in March',           excerpt:"The kingdom is never crowded, but in early spring something shifts — the passes clear, the monasteries breathe, and the quality of light becomes impossible to describe to anyone who hasn't been."},
-            {img:IMAGES.hotel,    featured:false, cat:'Perspective',   title:'Why the hotel you choose changes what you see',         excerpt:'Proximity to a city and immersion in it are very different things. The right address reframes everything.'},
-            {img:IMAGES.andalusia,featured:false, cat:'Craft',         title:'A guide to travelling slowly through Andalusia',        excerpt:'The south rewards those who resist the temptation to cover too much ground. Two weeks, three towns, one unhurried pace.'},
-          ].map((j,i) => (
-            <div key={i} className={`journal-card${j.featured?' featured':''} reveal`} style={{transitionDelay:`${i*0.1}s`}}>
-              <div className="journal-img" style={{backgroundImage:`url(${j.img})`,backgroundSize:'cover',backgroundPosition:'center'}}>
-                <div className="jimg-fill" />
-              </div>
+          {journalPosts.map((j,i) => (
+            /* Fix 4: journal cards link to #inquiry for now */
+            <a key={i} href="#inquiry" className={`journal-card${j.featured?' featured':''} reveal`} style={{transitionDelay:`${i*0.1}s`,textDecoration:'none',color:'inherit',display:'block'}}>
+              <div className="journal-img" style={{ backgroundImage:`url(${j.img})`, backgroundSize:'cover', backgroundPosition:'center' }} />
               <div className="journal-body">
                 <p className="journal-cat">{j.cat}</p>
                 <h3 className="journal-title">{j.title}</h3>
                 <p className="journal-excerpt">{j.excerpt}</p>
+                <p style={{marginTop:'12px',fontSize:'10px',letterSpacing:'0.25em',textTransform:'uppercase',color:'var(--gold)'}}>Read More →</p>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </section>
@@ -254,27 +278,52 @@ export default function SoleilNacre() {
               {emailSent ? 'Sent' : 'Reach Out'}
             </button>
           </div>
-          <p className="inquiry-note reveal">Alternatively, write to us at hello@soleilnacre.com</p>
+          <p className="inquiry-note reveal">Alternatively, write to us at <a href="mailto:hello@soleilnacre.com" style={{color:'rgba(245,240,232,0.4)',textDecoration:'none'}}>hello@soleilnacre.com</a></p>
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer — Fix 4: all links go to real sections or real URLs */}
       <footer>
         <div className="footer-top">
           <div>
             <p className="footer-brand-name">Soleil Nacre</p>
             <p className="footer-brand-desc">Private luxury travel concierge. Bespoke journeys for those who travel with purpose, taste, and the wish to be genuinely moved.</p>
           </div>
-          <div className="footer-col"><h4>Navigation</h4><ul><li><a href="#about">About</a></li><li><a href="#journeys">Journeys</a></li><li><a href="#services">Services</a></li><li><a href="#journal">Journal</a></li><li><a href="#inquiry">Inquiry</a></li></ul></div>
-          <div className="footer-col"><h4>Destinations</h4><ul><li><a href="#journeys">Mediterranean</a></li><li><a href="#journeys">East Africa</a></li><li><a href="#journeys">South Asia</a></li><li><a href="#journeys">Northern Europe</a></li><li><a href="#journeys">The Americas</a></li></ul></div>
-          <div className="footer-col"><h4>Contact</h4><ul><li><a href="mailto:hello@soleilnacre.com">hello@soleilnacre.com</a></li><li><a href="https://www.instagram.com/soleil_nacre" target="_blank" rel="noopener noreferrer">@soleil_nacre</a></li></ul></div>
+          <div className="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+              <li><a href="#home">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#journeys">Journeys</a></li>
+              <li><a href="#services">Services</a></li>
+              <li><a href="#journal">Journal</a></li>
+              <li><a href="#inquiry">Inquiry</a></li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h4>Destinations</h4>
+            <ul>
+              <li><a href="#journeys">Mediterranean</a></li>
+              <li><a href="#journeys">East Africa</a></li>
+              <li><a href="#journeys">South Asia</a></li>
+              <li><a href="#journeys">Northern Europe</a></li>
+              <li><a href="#journeys">The Americas</a></li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h4>Contact</h4>
+            <ul>
+              <li><a href="mailto:hello@soleilnacre.com">hello@soleilnacre.com</a></li>
+              <li><a href="https://www.instagram.com/soleil_nacre" target="_blank" rel="noopener noreferrer">@soleil_nacre</a></li>
+              <li><a href="#inquiry">Begin an Inquiry</a></li>
+            </ul>
+          </div>
         </div>
         <div className="footer-bottom">
           <p className="footer-legal">© 2026 Soleil Nacre. All rights reserved. Discretion is our first service.</p>
           <div className="footer-social">
             <a href="https://www.instagram.com/soleil_nacre" target="_blank" rel="noopener noreferrer">Instagram</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms</a>
+            <a href="mailto:hello@soleilnacre.com">Contact</a>
           </div>
         </div>
       </footer>
