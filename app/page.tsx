@@ -7,7 +7,7 @@ const HUBSPOT_FORM_GUID = '87de2666-5e92-470d-bb83-15cc7863142a';
 const IMAGES = {
   hero:      'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=2000&q=85',
   about:     'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1200&q=85',
-  amalfi:    'https://images.unsplash.com/photo-1555993539-1732b0258235?w=900&q=85',
+  amalfi:    'https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=900&q=85',
   kenya:     'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=900&q=85',
   kyoto:     'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900&q=85',
   bhutan:    'https://images.unsplash.com/photo-1553856622-d1b352e9a211?w=1200&q=85',
@@ -25,11 +25,11 @@ const DESTINATIONS: Record<string, {
   amalfi: {
     id: "amalfi", title: "The Amalfi Retreat", region: "Mediterranean, Italy",
     tagline: "Clifftop villas, sapphire waters, and the scent of lemons in the morning air.",
-    hero: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=2000&q=85",
+    hero: "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=2000&q=85",
     gallery: [
-      "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?w=900&q=80",
-      "https://images.unsplash.com/photo-1534445638895-9e762d1543f7?w=900&q=80",
-      "https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=900&q=80",
+      "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=900&q=80",
+      "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=900&q=80",
+      "https://images.unsplash.com/photo-1491557345352-5929e343eb89?w=900&q=80",
     ],
     nights: "10 nights recommended",
     intro: "The Amalfi Coast is one of the world's most breathtaking stretches of coastline — a vertical landscape of pastel villages, ancient lemon groves, and water so blue it seems invented. Soleil Nacre curates this journey around privacy, pace, and the particular pleasure of being somewhere extraordinary without effort.",
@@ -156,7 +156,7 @@ export default function SoleilNacre() {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, []);
+  }, [activeDestination]);
 
   // Close mobile menu on nav click
   const closeMenu = () => setMenuOpen(false);
@@ -250,7 +250,7 @@ export default function SoleilNacre() {
 
         {/* Back nav */}
         <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:100,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'20px 60px',background:'rgba(250,248,243,0.96)',backdropFilter:'blur(12px)',borderBottom:'1px solid var(--border)'}}>
-          <button onClick={() => setActiveDestination(null)} style={{background:'none',border:'none',fontFamily:"'Cormorant Garamond',serif",fontSize:'19px',fontWeight:300,letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--deep)',cursor:'pointer'}}>Soleil Nacre</button>
+          <button onClick={() => goBack('home')} style={{background:'none',border:'none',fontFamily:"'Cormorant Garamond',serif",fontSize:'19px',fontWeight:300,letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--deep)',cursor:'pointer'}}>Soleil Nacre</button>
           <button onClick={() => goBack('journeys')} style={{background:'none',border:'none',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--muted)',cursor:'pointer'}}>← All Journeys</button>
         </nav>
 
