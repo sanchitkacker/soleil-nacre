@@ -15,8 +15,106 @@ const IMAGES = {
   andalusia: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=85',
 };
 
+const DESTINATIONS: Record<string, {
+  id: string; title: string; region: string; tagline: string;
+  hero: string; gallery: string[]; nights: string;
+  intro: string; sections: { heading: string; body: string }[];
+  hotels: { name: string; desc: string }[];
+  experiences: string[];
+}> = {
+  amalfi: {
+    id: "amalfi", title: "The Amalfi Retreat", region: "Mediterranean, Italy",
+    tagline: "Clifftop villas, sapphire waters, and the scent of lemons in the morning air.",
+    hero: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=2000&q=85",
+    gallery: [
+      "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=900&q=80",
+      "https://images.unsplash.com/photo-1534445638895-9e762d1543f7?w=900&q=80",
+      "https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=900&q=80",
+    ],
+    nights: "10 nights recommended",
+    intro: "The Amalfi Coast is one of the world's most breathtaking stretches of coastline — a vertical landscape of pastel villages, ancient lemon groves, and water so blue it seems invented. Soleil Nacre curates this journey around privacy, pace, and the particular pleasure of being somewhere extraordinary without effort.",
+    sections: [
+      { heading: "Positano", body: "Begin in Positano, the jewel of the coast. Your private villa sits above the town, with uninterrupted sea views and a terrace made for lingering. Mornings are for the beach before the day-trippers arrive; evenings for candlelit dinners at Le Sirenuse or Da Adolfo, reached by boat." },
+      { heading: "Ravello", body: "Midway through, ascend to Ravello — 365 metres above the sea, cooler, quieter, and ravishingly beautiful. Villa Rufolo and its gardens, where Wagner composed, are yours in the early morning before the crowds. Dinner at Rossellinis, one of the finest tables in the south, rounds the day perfectly." },
+      { heading: "Capri", body: "A day trip to Capri by private tender brings you to the Blue Grotto, the Gardens of Augustus, and lunch at a terrace restaurant above the Faraglioni. The island rewards those who stay until the afternoon crowds have left — which is precisely what we arrange." },
+    ],
+    hotels: [
+      { name: "Le Sirenuse, Positano", desc: "The definitive Amalfi address. 58 rooms of hand-painted tiles, antique furniture, and a terrace that overlooks the entire bay." },
+      { name: "Monastero Santa Rosa, Conca dei Marini", desc: "A former 17th-century monastery perched on a cliff, with one of the coast's most spectacular infinity pools." },
+      { name: "Belmond Hotel Caruso, Ravello", desc: "Ravello's most celebrated property, with gardens, a converted pool, and views that justify the journey entirely." },
+    ],
+    experiences: [
+      "Private dawn boat tour of the Blue Grotto before public access opens",
+      "Hands-on pasta and limoncello class with a local family in their hillside home",
+      "Sunset aperitivo on the water, anchored between Positano and Praiano",
+      "After-hours visit to Villa Cimbrone's Terrace of Infinity",
+      "Market morning in Amalfi town with a private chef selecting ingredients for dinner",
+    ],
+  },
+  kenya: {
+    id: "kenya", title: "Kenya & Zanzibar", region: "East Africa",
+    tagline: "The savanna at first light. The Indian Ocean at dusk. Africa in full.",
+    hero: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=2000&q=85",
+    gallery: [
+      "https://images.unsplash.com/photo-1612250607226-aae5c5b3de5f?w=900&q=80",
+      "https://images.unsplash.com/photo-1630450203237-0a5e96d25bfb?w=900&q=80",
+      "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=900&q=80",
+    ],
+    nights: "14 nights recommended",
+    intro: "Kenya offers something few places on earth can match: the sight of ten thousand wildebeest moving across the Maasai Mara at dawn, witnessed from a canvas chair with coffee in hand and no one else in view. We pair this with Zanzibar's spice-scented Stone Town and the powder-white beaches of the north coast — a journey of profound contrast and lasting memory.",
+    sections: [
+      { heading: "Maasai Mara", body: "Your base is a private conservancy bordering the Mara — not a shared game reserve, but a concession where your vehicle is the only one in the landscape. Game drives are conducted by a dedicated ranger and Maasai guide who has tracked these animals for decades. Sundowners happen wherever the light is best that evening." },
+      { heading: "Amboseli", body: "Two nights in Amboseli, where vast herds of elephant move against the backdrop of Kilimanjaro. The mountain is shy — it reveals itself only when it wishes — which gives every morning a particular anticipation. Your camp here is intimate, solar-powered, and entirely without pretension." },
+      { heading: "Zanzibar", body: "The journey ends at the sea. Stone Town's labyrinthine streets and its fusion of Arab, Persian, and Swahili architecture reward an unhurried morning's walk. Then north to the beaches: long, empty, and fringed with palms. Snorkelling at Mnemba Atoll, a seafood dinner at sunset, and silence." },
+    ],
+    hotels: [
+      { name: "Angama Mara, Maasai Mara", desc: "Tented suites perched on the edge of the Great Rift Valley, with views across the Mara triangle that are genuinely without equal." },
+      { name: "Tortilis Camp, Amboseli", desc: "Classic East African elegance: spacious tents, a saltwater pool, and Kilimanjaro visible from your outdoor shower on a clear morning." },
+      { name: "The Palms, Zanzibar", desc: "Six beachfront villas on the quieter southeast coast. Butler service, private pool, and a beach that feels entirely yours." },
+    ],
+    experiences: [
+      "Dawn balloon safari over the Maasai Mara with champagne landing breakfast",
+      "Walking safari with a senior Maasai ranger in the private conservancy",
+      "Spice farm tour and cooking class in Zanzibar's interior",
+      "Snorkelling at Mnemba Atoll, one of the Indian Ocean's finest dive sites",
+      "Sundowner ceremony with local Maasai elders under an acacia tree",
+    ],
+  },
+  kyoto: {
+    id: "kyoto", title: "Kyoto & Aman", region: "Japan",
+    tagline: "Where temples breathe, moss gardens hold centuries, and time moves differently.",
+    hero: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=2000&q=85",
+    gallery: [
+      "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=80",
+      "https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900&q=80",
+      "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=900&q=80",
+    ],
+    nights: "12 nights recommended",
+    intro: "Japan rewards patience and preparation more than almost any destination on earth. Kyoto in particular — with its 1,600 temples, its ryokan culture, its seasonal rhythms of cherry blossom and autumn fire — requires the right introduction. Soleil Nacre has spent years cultivating the relationships that turn this extraordinary city from a tourist destination into a personal one.",
+    sections: [
+      { heading: "Higashiyama", body: "Your base in Kyoto's most atmospheric district, a short walk from Kiyomizudera and the stone-paved lanes of Ninenzaka. Your ryokan — a converted machiya townhouse — has been in the same family for four generations. Breakfast is kaiseki; the cedar bath is filled at the hour you specify." },
+      { heading: "Arashiyama", body: "An afternoon in Arashiyama requires only a bamboo grove, a boat on the Oi River, and the Tenryu-ji garden at closing time, when the last visitors have left and the raked gravel holds the light differently. We arrange access to Jojakko-ji, a moss-garden temple closed to general visitors." },
+      { heading: "Nara & Beyond", body: "A half-day in Nara — deer and the great Buddha — followed by the hidden Kasuga Taisha lantern paths at dusk. For those who wish to continue south, a night at Amanemu in Ise-Shima offers contemporary ryokan luxury at its most refined." },
+    ],
+    hotels: [
+      { name: "Aman Kyoto", desc: "Hidden at the foot of the Kitayama mountains, Aman Kyoto is reached through a forest path. The property feels like a secret the city keeps for those who know to ask." },
+      { name: "Tawaraya Ryokan, Kyoto", desc: "The oldest and most celebrated ryokan in Japan, operating since the early 18th century. Discretion, ceremony, and impeccable kaiseki cuisine." },
+      { name: "Amanemu, Ise-Shima", desc: "On a secluded bay two hours south, this resort combines traditional Japanese aesthetics with Aman's signature spaciousness and onsen baths fed by natural hot springs." },
+    ],
+    experiences: [
+      "Private tea ceremony with a licensed tea master in a garden pavilion",
+      "After-hours access to Fushimi Inari — the thousand torii gates at night",
+      "Nishiki Market at dawn with a private chef, followed by a cooking class",
+      "Ikebana (flower arrangement) lesson with a master practitioner",
+      "Kodo (incense ceremony) session at a 400-year-old merchant house",
+    ],
+  },
+};
+
+
 export default function SoleilNacre() {
   const [menuOpen, setMenuOpen]   = useState(false);
+  const [activeDestination, setActiveDestination] = useState<string | null>(null);
   const [toast, setToast]         = useState('');
   const [formSent, setFormSent]   = useState(false);
   const [formFields, setFormFields] = useState({
@@ -109,9 +207,9 @@ export default function SoleilNacre() {
   };
 
   const journeys = [
-    { img: IMAGES.amalfi,    region: 'Mediterranean', title: 'The Amalfi Retreat',  nights: '10 nights · Private villa · Yacht access' },
-    { img: IMAGES.kenya,     region: 'East Africa',   title: 'Kenya & Zanzibar',    nights: '14 nights · Private conservancy · Island close' },
-    { img: IMAGES.kyoto,     region: 'Southeast Asia',title: 'Kyoto & Aman',        nights: '12 nights · Ryokan stays · Private tea ceremony' },
+    { id: 'amalfi', img: IMAGES.amalfi,    region: 'Mediterranean', title: 'The Amalfi Retreat',  nights: '10 nights · Private villa · Yacht access' },
+    { id: 'kenya',  img: IMAGES.kenya,     region: 'East Africa',   title: 'Kenya & Zanzibar',    nights: '14 nights · Private conservancy · Island close' },
+    { id: 'kyoto',  img: IMAGES.kyoto,     region: 'Southeast Asia',title: 'Kyoto & Aman',        nights: '12 nights · Ryokan stays · Private tea ceremony' },
   ];
 
   const services = [
@@ -181,7 +279,7 @@ export default function SoleilNacre() {
           <h2 className="reveal">Travel designed<br />around <em>you</em>.</h2>
           <p className="reveal">We believe the finest journeys are never assembled from a catalogue. They emerge from understanding — who you are, what moves you, how you wish to feel when you arrive somewhere new.</p>
           <p className="reveal">At Soleil Nacre, every journey begins with a conversation. We listen before we plan, and we refine until the itinerary feels inevitable — as if it could only have been made for you.</p>
-          <p className="reveal">Our network spans the world's most coveted properties, private guides, and cultural institutions. We open doors that remain closed to others, and we do it quietly.</p>
+          <p className="reveal">Our network spans the world\'s most coveted properties, private guides, and cultural institutions. We open doors that remain closed to others, and we do it quietly.</p>
           <div className="pillars reveal">
             <div className="pillar"><div className="pillar-icon" aria-hidden="true">I</div><h3>Discretion</h3><p>Your travel is private. Our team operates under strict confidentiality at every stage.</p></div>
             <div className="pillar"><div className="pillar-icon" aria-hidden="true">II</div><h3>Access</h3><p>Exclusive relationships with properties, estates, and experiences unavailable to the public.</p></div>
@@ -210,7 +308,7 @@ export default function SoleilNacre() {
                   <p className="journey-nights">{j.nights}</p>
                 </div>
               </div>
-              <a href="#inquiry" className="journey-link">Enquire about this journey</a>
+              <button className="journey-link" onClick={() => { setActiveDestination(j.id); window.scrollTo({top:0,behavior:'smooth'}); }}>Explore Destination</button>
             </div>
           ))}
         </div>
@@ -393,9 +491,9 @@ export default function SoleilNacre() {
           <div className="footer-col">
             <h4>Destinations</h4>
             <ul>
-              <li><a href="#journeys">Mediterranean</a></li>
-              <li><a href="#journeys">East Africa</a></li>
-              <li><a href="#journeys">South Asia</a></li>
+              <li><button onClick={() => { setActiveDestination('amalfi'); window.scrollTo({top:0,behavior:'smooth'}); }} style={{background:'none',border:'none',padding:0,color:'rgba(245,240,232,0.4)',fontSize:'13px',cursor:'pointer',textAlign:'left',transition:'color 0.25s'}} onMouseEnter={e=>(e.currentTarget.style.color='#faf8f3')} onMouseLeave={e=>(e.currentTarget.style.color='rgba(245,240,232,0.4)')}>Mediterranean</button></li>
+              <li><button onClick={() => { setActiveDestination('kenya'); window.scrollTo({top:0,behavior:'smooth'}); }} style={{background:'none',border:'none',padding:0,color:'rgba(245,240,232,0.4)',fontSize:'13px',cursor:'pointer',textAlign:'left',transition:'color 0.25s'}} onMouseEnter={e=>(e.currentTarget.style.color='#faf8f3')} onMouseLeave={e=>(e.currentTarget.style.color='rgba(245,240,232,0.4)')}>East Africa</button></li>
+              <li><button onClick={() => { setActiveDestination('kyoto'); window.scrollTo({top:0,behavior:'smooth'}); }} style={{background:'none',border:'none',padding:0,color:'rgba(245,240,232,0.4)',fontSize:'13px',cursor:'pointer',textAlign:'left',transition:'color 0.25s'}} onMouseEnter={e=>(e.currentTarget.style.color='#faf8f3')} onMouseLeave={e=>(e.currentTarget.style.color='rgba(245,240,232,0.4)')}>South Asia</button></li>
               <li><a href="#journeys">Northern Europe</a></li>
               <li><a href="#journeys">The Americas</a></li>
             </ul>
