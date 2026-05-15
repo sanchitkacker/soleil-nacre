@@ -233,6 +233,113 @@ export default function SoleilNacre() {
     { img: IMAGES.andalusia, featured: false, cat: 'Craft',        title: 'A guide to travelling slowly through Andalusia',excerpt: 'The south rewards those who resist the temptation to cover too much ground. Two weeks, three towns, one unhurried pace.' },
   ];
 
+  // ── Destination detail page ────────────────────────────────────────
+  if (activeDestination) {
+    const d = DESTINATIONS[activeDestination];
+    if (!d) { setActiveDestination(null); return null; }
+    return (
+      <div style={{background:'var(--ivory)',minHeight:'100vh',color:'var(--warm)',fontFamily:"'Tenor Sans',sans-serif"}}>
+
+        {/* Back nav */}
+        <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:100,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'20px 60px',background:'rgba(250,248,243,0.96)',backdropFilter:'blur(12px)',borderBottom:'1px solid var(--border)'}}>
+          <button onClick={() => setActiveDestination(null)} style={{background:'none',border:'none',fontFamily:"'Cormorant Garamond',serif",fontSize:'19px',fontWeight:300,letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--deep)',cursor:'pointer'}}>Soleil Nacre</button>
+          <button onClick={() => { setActiveDestination(null); setTimeout(() => document.getElementById('journeys')?.scrollIntoView({behavior:'smooth'}), 100); }} style={{background:'none',border:'none',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--muted)',cursor:'pointer'}}>← All Journeys</button>
+        </nav>
+
+        {/* Hero */}
+        <div style={{height:'100vh',position:'relative',display:'flex',alignItems:'flex-end',padding:'0 60px 80px'}}>
+          <div style={{position:'absolute',inset:0,backgroundImage:`url(${d.hero})`,backgroundSize:'cover',backgroundPosition:'center'}} />
+          <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(26,22,18,0.82) 0%,rgba(26,22,18,0.1) 65%,transparent 100%)'}} />
+          <div style={{position:'relative',zIndex:2,maxWidth:'720px'}}>
+            <p style={{fontSize:'10px',letterSpacing:'0.4em',textTransform:'uppercase',color:'var(--gold-light)',marginBottom:'16px'}}>{d.region}</p>
+            <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(44px,6vw,86px)',fontWeight:300,color:'#faf8f3',lineHeight:1.0,marginBottom:'20px'}}>{d.title}</h1>
+            <p style={{fontSize:'15px',color:'rgba(245,240,232,0.75)',lineHeight:1.85,maxWidth:'500px',marginBottom:'36px',fontStyle:'italic'}}>{d.tagline}</p>
+            <div style={{display:'flex',gap:'20px',alignItems:'center',flexWrap:'wrap'}}>
+              <button onClick={() => { setActiveDestination(null); setTimeout(() => document.getElementById('inquiry')?.scrollIntoView({behavior:'smooth'}), 100); }} style={{background:'var(--gold)',color:'#faf8f3',border:'none',padding:'14px 36px',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',cursor:'pointer'}}>Begin Inquiry</button>
+              <span style={{fontSize:'11px',color:'rgba(245,240,232,0.45)',letterSpacing:'0.1em'}}>{d.nights}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Intro */}
+        <div style={{padding:'100px 60px 48px',maxWidth:'860px'}}>
+          <p style={{fontSize:'10px',letterSpacing:'0.35em',textTransform:'uppercase',color:'var(--gold)',marginBottom:'20px'}}>Overview</p>
+          <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(20px,2.4vw,28px)',fontWeight:300,lineHeight:1.65,color:'var(--deep)'}}>{d.intro}</p>
+        </div>
+
+        {/* Gallery */}
+        <div style={{padding:'0 60px 80px',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'12px'}}>
+          {d.gallery.map((img,i) => (
+            <div key={i} style={{height:'260px',backgroundImage:`url(${img})`,backgroundSize:'cover',backgroundPosition:'center',borderRadius:'2px'}} />
+          ))}
+        </div>
+
+        {/* Journey sections */}
+        <div style={{padding:'80px 60px',background:'var(--sand)'}}>
+          <p style={{fontSize:'10px',letterSpacing:'0.35em',textTransform:'uppercase',color:'var(--gold)',marginBottom:'52px'}}>The Journey</p>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'48px'}}>
+            {d.sections.map((s,i) => (
+              <div key={i}>
+                <div style={{width:'32px',height:'1px',background:'var(--gold)',marginBottom:'20px'}} />
+                <h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'26px',fontWeight:300,color:'var(--deep)',marginBottom:'14px'}}>{s.heading}</h3>
+                <p style={{fontSize:'14px',color:'var(--muted)',lineHeight:1.9}}>{s.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Hotels */}
+        <div style={{padding:'80px 60px',background:'var(--deep)'}}>
+          <p style={{fontSize:'10px',letterSpacing:'0.35em',textTransform:'uppercase',color:'var(--gold)',marginBottom:'52px'}}>Where You Stay</p>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'2px'}}>
+            {d.hotels.map((h,i) => (
+              <div key={i} style={{background:'var(--deep)',padding:'40px 36px',borderTop:'2px solid var(--gold)'}}>
+                <h3 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'22px',fontWeight:300,color:'#faf8f3',marginBottom:'12px',lineHeight:1.3}}>{h.name}</h3>
+                <p style={{fontSize:'13px',color:'rgba(245,240,232,0.45)',lineHeight:1.85}}>{h.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Experiences */}
+        <div style={{padding:'80px 60px',background:'var(--ivory)'}}>
+          <p style={{fontSize:'10px',letterSpacing:'0.35em',textTransform:'uppercase',color:'var(--gold)',marginBottom:'52px'}}>Signature Experiences</p>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0',maxWidth:'860px'}}>
+            {d.experiences.map((e,i) => (
+              <div key={i} style={{padding:'24px 20px 24px 0',borderBottom:'1px solid var(--border)',display:'flex',gap:'20px',alignItems:'flex-start'}}>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'20px',color:'var(--gold)',opacity:0.45,flexShrink:0}}>0{i+1}</span>
+                <p style={{fontSize:'14px',color:'var(--muted)',lineHeight:1.8}}>{e}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div style={{padding:'100px 60px',background:'var(--deep)',textAlign:'center',position:'relative',overflow:'hidden'}}>
+          <div style={{position:'absolute',top:'50%',left:'50%',width:'600px',height:'600px',border:'1px solid rgba(184,150,90,0.08)',borderRadius:'50%',transform:'translate(-50%,-50%)',pointerEvents:'none'}} />
+          <div style={{position:'relative',zIndex:2}}>
+            <p style={{fontSize:'10px',letterSpacing:'0.35em',textTransform:'uppercase',color:'var(--gold)',marginBottom:'20px'}}>Reserve This Journey</p>
+            <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(32px,4vw,54px)',fontWeight:300,color:'#faf8f3',marginBottom:'16px',lineHeight:1.15}}>Begin your <em style={{fontStyle:'italic',color:'var(--gold)'}}>{d.title}</em></h2>
+            <p style={{color:'rgba(245,240,232,0.4)',maxWidth:'440px',margin:'0 auto 40px',lineHeight:1.9,fontSize:'14px'}}>Our concierge team will be in touch within 24 hours to discuss your dates, preferences, and any questions.</p>
+            <button onClick={() => { setActiveDestination(null); setTimeout(() => document.getElementById('inquiry')?.scrollIntoView({behavior:'smooth'}), 100); }} style={{background:'var(--gold)',color:'#faf8f3',border:'none',padding:'16px 44px',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',cursor:'pointer'}}>
+              Submit an Inquiry
+            </button>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <footer style={{background:'#100e0b',color:'#faf8f3',padding:'36px 60px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'16px'}}>
+          <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'18px',fontWeight:300,letterSpacing:'0.2em',textTransform:'uppercase'}}>Soleil Nacre</p>
+          <p style={{fontSize:'11px',color:'rgba(245,240,232,0.2)'}}>© 2026 Soleil Nacre. All rights reserved.</p>
+          <div style={{display:'flex',gap:'20px'}}>
+            <a href="https://www.instagram.com/soleil_nacre" target="_blank" rel="noopener noreferrer" style={{fontSize:'10px',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(245,240,232,0.3)',textDecoration:'none'}}>Instagram</a>
+            <a href="mailto:hello@soleilnacre.com" style={{fontSize:'10px',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(245,240,232,0.3)',textDecoration:'none'}}>Contact</a>
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
   return (
     <>
 
