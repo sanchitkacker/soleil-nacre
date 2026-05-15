@@ -27,7 +27,7 @@ const DESTINATIONS: Record<string, {
     tagline: "Clifftop villas, sapphire waters, and the scent of lemons in the morning air.",
     hero: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=2000&q=85",
     gallery: [
-      "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=900&q=80",
+      "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?w=900&q=80",
       "https://images.unsplash.com/photo-1534445638895-9e762d1543f7?w=900&q=80",
       "https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=900&q=80",
     ],
@@ -56,8 +56,8 @@ const DESTINATIONS: Record<string, {
     tagline: "The savanna at first light. The Indian Ocean at dusk. Africa in full.",
     hero: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=2000&q=85",
     gallery: [
-      "https://images.unsplash.com/photo-1612250607226-aae5c5b3de5f?w=900&q=80",
-      "https://images.unsplash.com/photo-1630450203237-0a5e96d25bfb?w=900&q=80",
+      "https://images.unsplash.com/photo-1523805009345-7448845a9e53?w=900&q=80",
+      "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=900&q=80",
       "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=900&q=80",
     ],
     nights: "14 nights recommended",
@@ -115,6 +115,14 @@ const DESTINATIONS: Record<string, {
 export default function SoleilNacre() {
   const [menuOpen, setMenuOpen]   = useState(false);
   const [activeDestination, setActiveDestination] = useState<string | null>(null);
+  const [backTarget, setBackTarget] = useState<string>('journeys');
+
+  const goBack = (target = backTarget) => {
+    setActiveDestination(null);
+    setTimeout(() => {
+      document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' });
+    }, 80);
+  };
   const [toast, setToast]         = useState('');
   const [formSent, setFormSent]   = useState(false);
   const [formFields, setFormFields] = useState({
@@ -243,7 +251,7 @@ export default function SoleilNacre() {
         {/* Back nav */}
         <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:100,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'20px 60px',background:'rgba(250,248,243,0.96)',backdropFilter:'blur(12px)',borderBottom:'1px solid var(--border)'}}>
           <button onClick={() => setActiveDestination(null)} style={{background:'none',border:'none',fontFamily:"'Cormorant Garamond',serif",fontSize:'19px',fontWeight:300,letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--deep)',cursor:'pointer'}}>Soleil Nacre</button>
-          <button onClick={() => { setActiveDestination(null); setTimeout(() => document.getElementById('journeys')?.scrollIntoView({behavior:'smooth'}), 100); }} style={{background:'none',border:'none',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--muted)',cursor:'pointer'}}>← All Journeys</button>
+          <button onClick={() => goBack('journeys')} style={{background:'none',border:'none',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--muted)',cursor:'pointer'}}>← All Journeys</button>
         </nav>
 
         {/* Hero */}
@@ -255,7 +263,7 @@ export default function SoleilNacre() {
             <h1 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(44px,6vw,86px)',fontWeight:300,color:'#faf8f3',lineHeight:1.0,marginBottom:'20px'}}>{d.title}</h1>
             <p style={{fontSize:'15px',color:'rgba(245,240,232,0.75)',lineHeight:1.85,maxWidth:'500px',marginBottom:'36px',fontStyle:'italic'}}>{d.tagline}</p>
             <div style={{display:'flex',gap:'20px',alignItems:'center',flexWrap:'wrap'}}>
-              <button onClick={() => { setActiveDestination(null); setTimeout(() => document.getElementById('inquiry')?.scrollIntoView({behavior:'smooth'}), 100); }} style={{background:'var(--gold)',color:'#faf8f3',border:'none',padding:'14px 36px',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',cursor:'pointer'}}>Begin Inquiry</button>
+              <button onClick={() => goBack('inquiry')} style={{background:'var(--gold)',color:'#faf8f3',border:'none',padding:'14px 36px',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',cursor:'pointer'}}>Begin Inquiry</button>
               <span style={{fontSize:'11px',color:'rgba(245,240,232,0.45)',letterSpacing:'0.1em'}}>{d.nights}</span>
             </div>
           </div>
@@ -321,7 +329,7 @@ export default function SoleilNacre() {
             <p style={{fontSize:'10px',letterSpacing:'0.35em',textTransform:'uppercase',color:'var(--gold)',marginBottom:'20px'}}>Reserve This Journey</p>
             <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(32px,4vw,54px)',fontWeight:300,color:'#faf8f3',marginBottom:'16px',lineHeight:1.15}}>Begin your <em style={{fontStyle:'italic',color:'var(--gold)'}}>{d.title}</em></h2>
             <p style={{color:'rgba(245,240,232,0.4)',maxWidth:'440px',margin:'0 auto 40px',lineHeight:1.9,fontSize:'14px'}}>Our concierge team will be in touch within 24 hours to discuss your dates, preferences, and any questions.</p>
-            <button onClick={() => { setActiveDestination(null); setTimeout(() => document.getElementById('inquiry')?.scrollIntoView({behavior:'smooth'}), 100); }} style={{background:'var(--gold)',color:'#faf8f3',border:'none',padding:'16px 44px',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',cursor:'pointer'}}>
+            <button onClick={() => goBack('inquiry')} style={{background:'var(--gold)',color:'#faf8f3',border:'none',padding:'16px 44px',fontSize:'11px',letterSpacing:'0.2em',textTransform:'uppercase',cursor:'pointer'}}>
               Submit an Inquiry
             </button>
           </div>
@@ -415,7 +423,7 @@ export default function SoleilNacre() {
                   <p className="journey-nights">{j.nights}</p>
                 </div>
               </div>
-              <button className="journey-link" onClick={() => { setActiveDestination(j.id); window.scrollTo({top:0,behavior:'smooth'}); }}>Explore Destination</button>
+              <button className="journey-link" onClick={() => { setBackTarget('journeys'); setActiveDestination(j.id); window.scrollTo({top:0,behavior:'smooth'}); }}>Explore Destination</button>
             </div>
           ))}
         </div>
@@ -598,9 +606,9 @@ export default function SoleilNacre() {
           <div className="footer-col">
             <h4>Destinations</h4>
             <ul>
-              <li><button onClick={() => { setActiveDestination('amalfi'); window.scrollTo({top:0,behavior:'smooth'}); }} style={{background:'none',border:'none',padding:0,color:'rgba(245,240,232,0.4)',fontSize:'13px',cursor:'pointer',textAlign:'left',transition:'color 0.25s'}} onMouseEnter={e=>(e.currentTarget.style.color='#faf8f3')} onMouseLeave={e=>(e.currentTarget.style.color='rgba(245,240,232,0.4)')}>Mediterranean</button></li>
-              <li><button onClick={() => { setActiveDestination('kenya'); window.scrollTo({top:0,behavior:'smooth'}); }} style={{background:'none',border:'none',padding:0,color:'rgba(245,240,232,0.4)',fontSize:'13px',cursor:'pointer',textAlign:'left',transition:'color 0.25s'}} onMouseEnter={e=>(e.currentTarget.style.color='#faf8f3')} onMouseLeave={e=>(e.currentTarget.style.color='rgba(245,240,232,0.4)')}>East Africa</button></li>
-              <li><button onClick={() => { setActiveDestination('kyoto'); window.scrollTo({top:0,behavior:'smooth'}); }} style={{background:'none',border:'none',padding:0,color:'rgba(245,240,232,0.4)',fontSize:'13px',cursor:'pointer',textAlign:'left',transition:'color 0.25s'}} onMouseEnter={e=>(e.currentTarget.style.color='#faf8f3')} onMouseLeave={e=>(e.currentTarget.style.color='rgba(245,240,232,0.4)')}>South Asia</button></li>
+              <li><button onClick={() => { setBackTarget('journeys'); setActiveDestination('amalfi'); window.scrollTo({top:0,behavior:'smooth'}); }} style={{background:'none',border:'none',padding:0,color:'rgba(245,240,232,0.4)',fontSize:'13px',cursor:'pointer',textAlign:'left',transition:'color 0.25s'}} onMouseEnter={e=>(e.currentTarget.style.color='#faf8f3')} onMouseLeave={e=>(e.currentTarget.style.color='rgba(245,240,232,0.4)')}>Mediterranean</button></li>
+              <li><button onClick={() => { setBackTarget('journeys'); setActiveDestination('kenya'); window.scrollTo({top:0,behavior:'smooth'}); }} style={{background:'none',border:'none',padding:0,color:'rgba(245,240,232,0.4)',fontSize:'13px',cursor:'pointer',textAlign:'left',transition:'color 0.25s'}} onMouseEnter={e=>(e.currentTarget.style.color='#faf8f3')} onMouseLeave={e=>(e.currentTarget.style.color='rgba(245,240,232,0.4)')}>East Africa</button></li>
+              <li><button onClick={() => { setBackTarget('journeys'); setActiveDestination('kyoto'); window.scrollTo({top:0,behavior:'smooth'}); }} style={{background:'none',border:'none',padding:0,color:'rgba(245,240,232,0.4)',fontSize:'13px',cursor:'pointer',textAlign:'left',transition:'color 0.25s'}} onMouseEnter={e=>(e.currentTarget.style.color='#faf8f3')} onMouseLeave={e=>(e.currentTarget.style.color='rgba(245,240,232,0.4)')}>South Asia</button></li>
               <li><a href="#journeys">Northern Europe</a></li>
               <li><a href="#journeys">The Americas</a></li>
             </ul>
