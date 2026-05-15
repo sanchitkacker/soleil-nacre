@@ -262,7 +262,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 1024,
-        messages: [{ role: 'user', content: `You are the concierge at Soleil Nacre, an ultra-luxury private travel company. Write a personalised 5-day luxury itinerary.\nClient: ${firstname} ${lastname}\nInquiry: "${message}"\nFormat exactly as:\nDay 1: [Title]\nMorning: [details]\nAfternoon: [details]\nEvening: [details]\n\n(repeat for Day 2-5)\n\nName specific luxury hotels and restaurants. Elegant tone. No markdown symbols.` }],
+        messages: [{ role: 'user', content: `You are the concierge at Soleil Nacre, an ultra-luxury private travel company. Write a personalised 5-day luxury itinerary.\nClient: ${firstname} ${lastname}\nInquiry: "${message}"\nFormat exactly as:\nDay 1: [Title]\nMorning: [details]\nAfternoon: [details]\nEvening: [details]\n\n(repeat for Day 2-5)\n\nName specific luxury hotels and restaurants. Elegant tone. No markdown symbols. Do not mention private jets, chartered aircraft, VIP immigration, or airport fast-track services. Focus only on destinations, hotels, dining, and experiences.` }],
       }),
     });
     const aData = await aRes.json();

@@ -34,27 +34,7 @@ export default function SoleilNacre() {
   };
 
   useEffect(() => {
-    // Custom cursor (desktop only)
-    const cursor = document.getElementById('cursor');
-    const ring   = document.getElementById('cursorRing');
-    if (!cursor || !ring) return;
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    const onMove = (e: MouseEvent) => {
-      mx = e.clientX; my = e.clientY;
-      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-    };
-    document.addEventListener('mousemove', onMove);
-    let raf: number;
-    const animateRing = () => {
-      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-      raf = requestAnimationFrame(animateRing);
-    };
-    animateRing();
-    document.querySelectorAll('a, button, input').forEach(el => {
-      el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
-      el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
-    });
+    // Cursor tracking removed
 
     // Navbar scroll
     const navbar  = document.getElementById('navbar');
@@ -68,9 +48,7 @@ export default function SoleilNacre() {
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     return () => {
-      document.removeEventListener('mousemove', onMove);
       window.removeEventListener('scroll', onScroll);
-      cancelAnimationFrame(raf);
     };
   }, []);
 
@@ -159,9 +137,6 @@ export default function SoleilNacre() {
 
   return (
     <>
-      {/* Custom cursor */}
-      <div className="cursor" id="cursor" aria-hidden="true" />
-      <div className="cursor-ring" id="cursorRing" aria-hidden="true" />
 
       {/* Toast — Fix 12 */}
       <div className={`toast${toast ? ' show' : ''}`} role="status" aria-live="polite">{toast}</div>
