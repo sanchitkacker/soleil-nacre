@@ -333,3 +333,107 @@ footer { background: #100e0b; color: var(--ivory); padding: 70px 60px 40px; }
   pointer-events: none;
 }
 .toast.show { opacity: 1; transform: translateY(0); }
+
+/* ── FULL MOBILE OPTIMIZATION ─────────────────────────────────── */
+
+/* Shared mobile helpers */
+@media (max-width: 720px) {
+  /* Typography scale */
+  h2 { font-size: clamp(28px, 8vw, 42px); margin-bottom: 16px; }
+  .section-label { margin-bottom: 12px; }
+
+  /* Hero */
+  .hero { padding: 0 20px 40px; min-height: 100svh; }
+  .hero h1 { font-size: clamp(38px, 10vw, 56px); margin-bottom: 18px; }
+  .hero-sub { font-size: 13px; margin-bottom: 28px; max-width: 100%; }
+  .hero-actions { flex-direction: column; gap: 12px; align-items: flex-start; }
+  .btn-primary, .btn-ghost { font-size: 11px; padding: 13px 28px; }
+  .hero-scroll { display: none; }
+
+  /* Nav */
+  nav { padding: 16px 20px; }
+  nav.scrolled { padding: 12px 20px; }
+  .nav-logo { font-size: 15px; }
+
+  /* Philosophy */
+  .philosophy { padding: 60px 20px; gap: 32px; }
+  .philosophy-image { height: 280px; }
+  .pillars { margin-top: 32px; }
+  .pillar { padding: 24px 20px; }
+  .pillar p { font-size: 12px; }
+
+  /* Journeys */
+  .journeys { padding: 60px 20px; }
+  .journeys-intro { margin-bottom: 32px; gap: 16px; }
+  .journey-img { height: 300px; }
+  .journey-info { padding: 20px; }
+  .journey-title { font-size: 20px; }
+  .journey-link { padding: 12px; font-size: 10px; }
+
+  /* Services */
+  .services { padding: 60px 20px; }
+  .service-item { padding: 32px 24px; }
+  .service-item h3 { font-size: 20px; }
+  .service-item p { font-size: 12px; }
+
+  /* Testimonials */
+  .testimonials { padding: 60px 20px; }
+  .testi-card { padding: 32px 24px; }
+  .testi-text { font-size: 16px; }
+
+  /* Process */
+  .process { padding: 60px 20px; }
+  .step-num { font-size: 52px; }
+
+  /* Journal */
+  .journal { padding: 60px 20px; }
+  .journal-card.featured .journal-img { height: 280px; }
+  .journal-img { height: 220px; }
+  .journal-card.featured .journal-title { font-size: 24px; }
+  .journal-title { font-size: 18px; }
+  .journal-body { padding: 16px 0 0; }
+
+  /* Inquiry section */
+  .inquiry { padding: 60px 20px; }
+  .inquiry h2 { font-size: clamp(28px, 8vw, 42px); }
+  .inquiry p { font-size: 13px; margin-bottom: 28px; }
+
+  /* Toast */
+  .toast { bottom: 16px; right: 16px; left: 16px; font-size: 12px; padding: 12px 16px; }
+
+  /* Footer */
+  footer { padding: 48px 20px 32px; }
+  .footer-brand-name { font-size: 18px; }
+  .footer-brand-desc { font-size: 12px; }
+  .footer-legal { font-size: 10px; }
+}
+
+/* Destination detail page — mobile */
+.dest-nav { padding: 16px 20px !important; }
+.dest-hero-content { padding: 0 20px 48px !important; }
+.dest-intro { padding: 64px 20px 36px !important; }
+.dest-gallery { padding: 0 20px 48px !important; grid-template-columns: 1fr !important; }
+.dest-gallery-img { height: 220px !important; }
+.dest-sections { padding: 52px 20px !important; }
+.dest-sections-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+.dest-hotels { padding: 52px 20px !important; }
+.dest-hotels-grid { grid-template-columns: 1fr !important; }
+.dest-hotel-card { padding: 28px 20px !important; }
+.dest-experiences { padding: 52px 20px !important; }
+.dest-experiences-grid { grid-template-columns: 1fr !important; }
+.dest-cta { padding: 64px 20px !important; }
+.dest-footer { padding: 28px 20px !important; flex-direction: column !important; gap: 12px !important; text-align: center !important; }
+
+/* Inquiry form — mobile */
+@media (max-width: 720px) {
+  .inq-name-row { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 720px) {
+  .dest-nav { padding: 16px 20px !important; }
+  .dest-hero { padding: 0 20px 40px !important; }
+  .dest-hero-content { padding: 0 !important; }
+  .dest-hero-content h1 { font-size: clamp(36px, 9vw, 52px) !important; }
+  .dest-hero-content p { font-size: 13px !important; }
+  .dest-hero-content div { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
