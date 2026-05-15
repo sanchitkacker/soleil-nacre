@@ -16,11 +16,17 @@ const IMAGES = {
 };
 
 export default function SoleilNacre() {
+  const [menuOpen, setMenuOpen]   = useState(false);
+  const [toast, setToast]         = useState('');
+  const [formSent, setFormSent]   = useState(false);
+  const [formFields, setFormFields] = useState({
+    firstname: '', lastname: '', email: '', destination: '', message: ''
+  });
+  const [formError, setFormError] = useState('');
+  // Keep simple email state for hero quick-capture (unused now but kept for future)
   const [email, setEmail]         = useState('');
   const [emailSent, setEmailSent] = useState(false);
   const [emailError, setEmailError] = useState(false);
-  const [menuOpen, setMenuOpen]   = useState(false);
-  const [toast, setToast]         = useState('');
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -71,28 +77,56 @@ export default function SoleilNacre() {
   // Close mobile menu on nav click
   const closeMenu = () => setMenuOpen(false);
 
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormFields(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   const handleInquiry = async () => {
-    if (!email || !email.includes('@')) {
-      setEmailError(true);
-      setTimeout(() => setEmailError(false), 2000);
+    if (!formFields.email || !formFields.email.includes('@')) {
+      setFormError('Please enter a valid email address.');
       showToast('Please enter a valid email address.');
       return;
     }
+    if (!formFields.firstname.trim()) {
+      setFormError('Please enter your first name.');
+      showToast('Please enter your first name.');
+      return;
+    }
+    setFormError('');
     try {
+      // Submit to HubSpot CRM
       await fetch(
         `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_GUID}`,
-        { method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields: [{ name: 'email', value: email }], context: { pageUri: typeof window !== 'undefined' ? window.location.href : '' } }) }
+        {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fields: [
+              { name: 'firstname',   value: formFields.firstname },
+              { name: 'lastname',    value: formFields.lastname },
+              { name: 'email',       value: formFields.email },
+              { name: 'message',     value: `Destination: ${formFields.destination}\n\n${formFields.message}` },
+            ],
+            context: { pageUri: typeof window !== 'undefined' ? window.location.href : '', pageName: 'Soleil Nacre — Inquiry' }
+          })
+        }
       );
+      // Trigger Claude itinerary generation
       fetch('/api/itinerary', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ properties: { email, firstname: '', lastname: '', message: 'Initial inquiry from homepage.' } }),
+        body: JSON.stringify({
+          properties: {
+            firstname:   formFields.firstname,
+            lastname:    formFields.lastname,
+            email:       formFields.email,
+            message:     `Destination: ${formFields.destination}\n\n${formFields.message}`,
+          }
+        }),
       }).catch(() => {});
-      setEmailSent(true);
-      setEmail('');
-      showToast('Thank you — we will be in touch within 24 hours.');
+      setFormSent(true);
+      setFormFields({ firstname: '', lastname: '', email: '', destination: '', message: '' });
+      showToast('Thank you — your bespoke itinerary is on its way!');
     } catch {
-      showToast('Something went wrong. Please try again.');
+      showToast('Something went wrong. Please try again or email us directly.');
     }
   };
 
@@ -283,35 +317,83 @@ export default function SoleilNacre() {
         </div>
       </section>
 
-      {/* Inquiry */}
+      {/* Inquiry — full HubSpot form with itinerary trigger */}
       <section className="inquiry" id="inquiry" aria-label="Begin your journey">
         <div className="inquiry-inner">
           <p className="section-label reveal">Begin Your Journey</p>
           <h2 className="reveal">Tell us where<br />your mind <em>wanders</em>.</h2>
-          <p className="reveal">Leave your email and we will be in touch within 24 hours to arrange a complimentary discovery conversation.</p>
-          <div className="inquiry-form reveal" role="form" aria-label="Email inquiry">
-            <input
-              type="email"
-              id="inquiry-email"
-              name="email"
-              aria-label="Your email address"
-              placeholder={emailError ? 'Please enter a valid email.' : emailSent ? 'Thank you — we will be in touch.' : 'Your email address'}
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              style={emailError ? {borderColor:'rgba(184,100,90,0.6)'} : {}}
-              onKeyDown={e => e.key === 'Enter' && handleInquiry()}
-              disabled={emailSent}
-            />
-            <button onClick={handleInquiry} disabled={emailSent} aria-label="Submit inquiry">
-              {emailSent ? 'Sent ✓' : 'Reach Out'}
-            </button>
-          </div>
-          <p className="inquiry-note reveal">
-            Alternatively, write to us at{' '}
-            <a href="mailto:hello@soleilnacre.com" style={{color:'rgba(245,240,232,0.5)',textDecoration:'underline'}}>
-              hello@soleilnacre.com
-            </a>
-          </p>
+          <p className="reveal">Share your details and we will craft a bespoke itinerary — delivered to your inbox within minutes.</p>
+
+          {formSent ? (
+            <div className="reveal" style={{maxWidth:'540px',margin:'0 auto',padding:'48px 36px',background:'rgba(255,255,255,0.04)',border:'1px solid rgba(184,150,90,0.2)',textAlign:'center'}}>
+              <p style={{fontSize:'32px',marginBottom:'16px'}}>✦</p>
+              <p style={{fontFamily:"'Cormorant Garamond', serif",fontSize:'24px',color:'var(--ivory)',marginBottom:'12px',fontWeight:300}}>Thank you, {formFields.firstname || 'for reaching out'}.</p>
+              <p style={{fontSize:'13px',color:'rgba(245,240,232,0.5)',lineHeight:1.8}}>Your bespoke itinerary is being crafted and will arrive in your inbox shortly. Our concierge team will follow up within 24 hours.</p>
+            </div>
+          ) : (
+            <div className="reveal" style={{maxWidth:'540px',margin:'0 auto'}}>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px',marginBottom:'12px'}}>
+                <div>
+                  <label htmlFor="firstname" style={{display:'block',fontSize:'9px',letterSpacing:'0.25em',textTransform:'uppercase',color:'rgba(245,240,232,0.4)',marginBottom:'6px'}}>First Name *</label>
+                  <input
+                    id="firstname" name="firstname" type="text" required
+                    value={formFields.firstname} onChange={handleFormChange}
+                    placeholder="Jane"
+                    style={{width:'100%',background:'rgba(255,255,255,0.06)',border:'1px solid rgba(184,150,90,0.3)',color:'var(--ivory)',padding:'12px 16px',fontFamily:"'Tenor Sans', sans-serif",fontSize:'13px',outline:'none',boxSizing:'border-box'}}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastname" style={{display:'block',fontSize:'9px',letterSpacing:'0.25em',textTransform:'uppercase',color:'rgba(245,240,232,0.4)',marginBottom:'6px'}}>Last Name</label>
+                  <input
+                    id="lastname" name="lastname" type="text"
+                    value={formFields.lastname} onChange={handleFormChange}
+                    placeholder="Doe"
+                    style={{width:'100%',background:'rgba(255,255,255,0.06)',border:'1px solid rgba(184,150,90,0.3)',color:'var(--ivory)',padding:'12px 16px',fontFamily:"'Tenor Sans', sans-serif",fontSize:'13px',outline:'none',boxSizing:'border-box'}}
+                  />
+                </div>
+              </div>
+              <div style={{marginBottom:'12px'}}>
+                <label htmlFor="inq-email" style={{display:'block',fontSize:'9px',letterSpacing:'0.25em',textTransform:'uppercase',color:'rgba(245,240,232,0.4)',marginBottom:'6px'}}>Email Address *</label>
+                <input
+                  id="inq-email" name="email" type="email" required
+                  value={formFields.email} onChange={handleFormChange}
+                  placeholder="jane@example.com"
+                  style={{width:'100%',background:'rgba(255,255,255,0.06)',border:`1px solid ${formError && !formFields.email ? 'rgba(220,100,90,0.6)' : 'rgba(184,150,90,0.3)'}`,color:'var(--ivory)',padding:'12px 16px',fontFamily:"'Tenor Sans', sans-serif",fontSize:'13px',outline:'none',boxSizing:'border-box'}}
+                />
+              </div>
+              <div style={{marginBottom:'12px'}}>
+                <label htmlFor="destination" style={{display:'block',fontSize:'9px',letterSpacing:'0.25em',textTransform:'uppercase',color:'rgba(245,240,232,0.4)',marginBottom:'6px'}}>Preferred Destinations</label>
+                <input
+                  id="destination" name="destination" type="text"
+                  value={formFields.destination} onChange={handleFormChange}
+                  placeholder="Amalfi, Maldives, Kyoto…"
+                  style={{width:'100%',background:'rgba(255,255,255,0.06)',border:'1px solid rgba(184,150,90,0.3)',color:'var(--ivory)',padding:'12px 16px',fontFamily:"'Tenor Sans', sans-serif",fontSize:'13px',outline:'none',boxSizing:'border-box'}}
+                />
+              </div>
+              <div style={{marginBottom:'20px'}}>
+                <label htmlFor="message" style={{display:'block',fontSize:'9px',letterSpacing:'0.25em',textTransform:'uppercase',color:'rgba(245,240,232,0.4)',marginBottom:'6px'}}>Tell Us About Your Ideal Journey</label>
+                <textarea
+                  id="message" name="message" rows={5}
+                  value={formFields.message} onChange={handleFormChange}
+                  placeholder="Travel style, special occasions, dates, number of guests…"
+                  style={{width:'100%',background:'rgba(255,255,255,0.06)',border:'1px solid rgba(184,150,90,0.3)',color:'var(--ivory)',padding:'12px 16px',fontFamily:"'Tenor Sans', sans-serif",fontSize:'13px',outline:'none',resize:'vertical',boxSizing:'border-box'}}
+                />
+              </div>
+              {formError && <p style={{fontSize:'12px',color:'rgba(220,100,90,0.9)',marginBottom:'12px'}}>{formError}</p>}
+              <button
+                onClick={handleInquiry}
+                style={{width:'100%',background:'var(--gold)',color:'var(--ivory)',border:'none',padding:'16px',fontFamily:"'Tenor Sans', sans-serif",fontSize:'11px',letterSpacing:'0.25em',textTransform:'uppercase',cursor:'pointer',transition:'background 0.25s'}}
+                onMouseEnter={e => (e.currentTarget.style.background='var(--gold-light)')}
+                onMouseLeave={e => (e.currentTarget.style.background='var(--gold)')}
+              >
+                Submit Inquiry & Receive Itinerary
+              </button>
+              <p style={{fontSize:'11px',color:'rgba(245,240,232,0.2)',letterSpacing:'0.05em',marginTop:'16px',textAlign:'center'}}>
+                A bespoke itinerary will be emailed to you automatically. Alternatively,{' '}
+                <a href="mailto:hello@soleilnacre.com" style={{color:'rgba(245,240,232,0.4)',textDecoration:'underline'}}>hello@soleilnacre.com</a>
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
