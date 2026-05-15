@@ -341,7 +341,7 @@ export default function SoleilNacre() {
           <p style={{fontSize:'11px',color:'rgba(245,240,232,0.2)'}}>© 2026 Soleil Nacre. All rights reserved.</p>
           <div style={{display:'flex',gap:'20px'}}>
             <a href="https://www.instagram.com/soleil_nacre" target="_blank" rel="noopener noreferrer" style={{fontSize:'10px',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(245,240,232,0.3)',textDecoration:'none'}}>Instagram</a>
-            <a href="mailto:hello@soleilnacre.com" style={{fontSize:'10px',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(245,240,232,0.3)',textDecoration:'none'}}>Contact</a>
+            <a href="mailto:sanchit@soleilnacre.com" style={{fontSize:'10px',letterSpacing:'0.2em',textTransform:'uppercase',color:'rgba(245,240,232,0.3)',textDecoration:'none'}}>Contact</a>
           </div>
         </footer>
       </div>
@@ -578,7 +578,7 @@ export default function SoleilNacre() {
               </button>
               <p style={{fontSize:'11px',color:'rgba(245,240,232,0.2)',letterSpacing:'0.05em',marginTop:'16px',textAlign:'center'}}>
                 A bespoke itinerary will be emailed to you automatically. Alternatively,{' '}
-                <a href="mailto:hello@soleilnacre.com" style={{color:'rgba(245,240,232,0.4)',textDecoration:'underline'}}>hello@soleilnacre.com</a>
+                <a href="mailto:sanchit@soleilnacre.com" style={{color:'rgba(245,240,232,0.4)',textDecoration:'underline'}}>sanchit@soleilnacre.com</a>
               </p>
             </div>
           )}
@@ -616,7 +616,7 @@ export default function SoleilNacre() {
           <div className="footer-col">
             <h4>Contact</h4>
             <ul>
-              <li><a href="mailto:hello@soleilnacre.com">hello@soleilnacre.com</a></li>
+              <li><a href="mailto:sanchit@soleilnacre.com">sanchit@soleilnacre.com</a></li>
               <li><a href="https://www.instagram.com/soleil_nacre" target="_blank" rel="noopener noreferrer">@soleil_nacre</a></li>
               <li><a href="#inquiry">Begin an Inquiry</a></li>
             </ul>
@@ -626,7 +626,7 @@ export default function SoleilNacre() {
           <p className="footer-legal">© 2026 Soleil Nacre. All rights reserved. Discretion is our first service.</p>
           <div className="footer-social">
             <a href="https://www.instagram.com/soleil_nacre" target="_blank" rel="noopener noreferrer">Instagram</a>
-            <a href="mailto:hello@soleilnacre.com">Contact</a>
+            <a href="mailto:sanchit@soleilnacre.com">Contact</a>
             <a href="#inquiry">Privacy Policy</a>
             <a href="#inquiry">Terms</a>
           </div>
