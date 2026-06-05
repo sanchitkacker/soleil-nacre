@@ -177,41 +177,46 @@ export default function SoleilNacre() {
       return;
     }
     setFormError('');
-    try {
-      // Submit to HubSpot CRM
-      await fetch(
-        `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_GUID}`,
-        {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fields: [
-              { name: 'firstname',   value: formFields.firstname },
-              { name: 'lastname',    value: formFields.lastname },
-              { name: 'email',       value: formFields.email },
-              { name: 'message',     value: `Destination: ${formFields.destination}\n\n${formFields.message}` },
-            ],
-            context: { pageUri: typeof window !== 'undefined' ? window.location.href : '', pageName: 'Soleil Nacre — Inquiry' }
-          })
+
+    const messageBody = `Destination: ${formFields.destination}\n\n${formFields.message}`;
+
+    // Fire itinerary FIRST — don't let HubSpot block it
+    fetch('/api/itinerary', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        properties: {
+          firstname: formFields.firstname,
+          lastname:  formFields.lastname,
+          email:     formFields.email,
+          message:   messageBody,
         }
-      );
-      // Trigger Claude itinerary generation
-      fetch('/api/itinerary', {
+      }),
+    }).then(r => r.json()).then(d => {
+      if (!d.success) console.warn('Itinerary API issue:', d);
+    }).catch(e => console.warn('Itinerary fetch error:', e));
+
+    // Submit to HubSpot in parallel — non-blocking
+    fetch(
+      `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_GUID}`,
+      {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          properties: {
-            firstname:   formFields.firstname,
-            lastname:    formFields.lastname,
-            email:       formFields.email,
-            message:     `Destination: ${formFields.destination}\n\n${formFields.message}`,
-          }
-        }),
-      }).catch(() => {});
-      setFormSent(true);
-      setFormFields({ firstname: '', lastname: '', email: '', destination: '', message: '' });
-      showToast('Thank you — your bespoke itinerary is on its way!');
-    } catch {
-      showToast('Something went wrong. Please try again or email us directly.');
-    }
+          fields: [
+            { name: 'firstname', value: formFields.firstname },
+            { name: 'lastname',  value: formFields.lastname },
+            { name: 'email',     value: formFields.email },
+            { name: 'message',   value: messageBody },
+          ],
+          context: { pageUri: typeof window !== 'undefined' ? window.location.href : '', pageName: 'Soleil Nacre — Inquiry' }
+        })
+      }
+    ).catch(() => {});
+
+    // Show success immediately — don't wait for either request
+    setFormSent(true);
+    setFormFields({ firstname: '', lastname: '', email: '', destination: '', message: '' });
+    showToast('Thank you — your bespoke itinerary is on its way!');
   };
 
   const journeys = [
