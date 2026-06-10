@@ -399,7 +399,7 @@ export default function SoleilNacre() {
           <h2 className="reveal">Travel designed<br />around <em>you</em>.</h2>
           <p className="reveal">We believe the finest journeys are never assembled from a catalogue. They emerge from understanding — who you are, what moves you, how you wish to feel when you arrive somewhere new.</p>
           <p className="reveal">At Soleil Nacre, every journey begins with a conversation. We listen before we plan, and we refine until the itinerary feels inevitable — as if it could only have been made for you.</p>
-          <p className="reveal">Our network spans the world\'s most coveted properties, private guides, and cultural institutions. We open doors that remain closed to others, and we do it quietly.</p>
+          <p className="reveal">Our network spans the world's most coveted properties, private guides, and cultural institutions. We open doors that remain closed to others, and we do it quietly.</p>
           <div className="pillars reveal">
             <div className="pillar"><div className="pillar-icon" aria-hidden="true">I</div><h3>Discretion</h3><p>Your travel is private. Our team operates under strict confidentiality at every stage.</p></div>
             <div className="pillar"><div className="pillar-icon" aria-hidden="true">II</div><h3>Access</h3><p>Exclusive relationships with properties, estates, and experiences unavailable to the public.</p></div>
